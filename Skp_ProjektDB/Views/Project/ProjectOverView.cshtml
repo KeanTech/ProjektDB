@@ -1,0 +1,60 @@
+﻿@model List<Skp_ProjektDB.Models.Project>
+
+@{
+    ViewData["Title"] = "ProjectOverView";
+}
+
+<!-- This is used for search it takes in a string through input and sends it to ProjectController via a post method -->
+@using (Html.BeginForm("ProjectSearch", "Project", FormMethod.Post))
+{
+    <input name="searchWord" type="text" placeholder="Søg efter navn her" />
+    <input type="submit" />
+}
+
+<div class="row card-color mt-3">
+
+    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-12 py-2">
+
+        <dl class="">
+
+            <dt class="text-center">
+                <label style="font-size:20px; font-weight:bolder">Projekt info</label>
+            </dt>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+
+                <dd>
+                    <table class="table table-bordered table-info">
+                        <thead>
+                            <tr>
+
+                                <th class="text-center" scope="row">Titel</th>
+                                <th class="text-center" scope="row">Beskrivelse</th>
+                                <th class="text-center" scope="row">Log</th>
+                                <th class="text-center" scope="row">Start dato</th>
+                                <th class="text-center" scope="row">Slut dato</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td class="align-middle text-center">@Model[i].Title</td>
+                                <td class="align-middle text-center">@Model[i].Description</td>
+                                <td class="align-middle text-center">@Model[i].Log</td>
+                                <td class="align-middle text-center">@Model[i].StartDate.ToString("dd-MM-yyyy")</td>
+                                <td class="align-middle text-center">@Model[i].EndDate.ToString("dd-MM-yyyy")</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </dd>
+
+            }
+        </dl>
+
+
+    </div>
+
+</div>

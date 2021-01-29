@@ -1,0 +1,30 @@
+﻿@model List<Skp_ProjektDB.Models.User>
+
+@{
+    ViewData["Title"] = "UserOverView";
+}
+
+<!-- This is used for search it takes in a string through input and sends it to UserController via a post method -->
+@using (Html.BeginForm("UserSearch", "User", FormMethod.Post))
+{
+    <input name="searchWord" type="text" placeholder="Søg efter navn her" />
+    <input type="submit" />
+}
+
+<ul class="card-color mt-2" style="list-style-type: decimal; width:250px;" >
+
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <li >
+            <form asp-action="SingleUserView">
+            
+                <div class="list-group-item-info">
+                <button class="btn btn-link btn-sm" type="submit" name="userName" value="@Model[i].Name">@Model[i].Name</button>
+                </div>
+            
+            </form>
+        </li>
+
+
+    }
+</ul>
