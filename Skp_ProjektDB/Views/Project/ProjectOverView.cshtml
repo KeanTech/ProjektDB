@@ -7,7 +7,7 @@
 <!-- This is used for search it takes in a string through input and sends it to ProjectController via a post method -->
 @using (Html.BeginForm("ProjectSearch", "Project", FormMethod.Post))
 {
-    <input name="searchWord" type="text" placeholder="Søg efter navn her" />
+    <input name="projectName" type="text" placeholder="Søg efter projekt her" />
     <input type="submit" />
 }
 
@@ -28,11 +28,11 @@
                         <thead>
                             <tr>
 
-                                <th class="text-center" scope="row">Titel</th>
-                                <th class="text-center" scope="row">Beskrivelse</th>
-                                <th class="text-center" scope="row">Log</th>
-                                <th class="text-center" scope="row">Start dato</th>
-                                <th class="text-center" scope="row">Slut dato</th>
+                                <th class="text-center" scope="col">Titel</th>
+                                <th class="text-center" scope="col">Beskrivelse</th>
+                                <th class="text-center" scope="col">Log</th>
+                                <th class="text-center" scope="col">Start dato</th>
+                                <th class="text-center" scope="col">Slut dato</th>
 
                             </tr>
                         </thead>
@@ -40,11 +40,19 @@
                         <tbody>
 
                             <tr>
-                                <td class="align-middle text-center">@Model[i].Title</td>
+
+                                <td class="align-middle text-center">
+                                    <form asp-action="SingleProjectView" asp-controller="Project">
+                                        <button class="btn btn-link btn-sm" type="submit" name="projectName" value="@Model[i].Title">
+                                            @Model[i].Title
+                                        </button>
+                                        
+                                    </form></td>
                                 <td class="align-middle text-center">@Model[i].Description</td>
-                                <td class="align-middle text-center">@Model[i].Log</td>
+                                <td class="align-middle text-center">@Model[i].Log[Model[i].Log.Count - 1]</td>
                                 <td class="align-middle text-center">@Model[i].StartDate.ToString("dd-MM-yyyy")</td>
                                 <td class="align-middle text-center">@Model[i].EndDate.ToString("dd-MM-yyyy")</td>
+
                             </tr>
 
                         </tbody>
@@ -53,7 +61,6 @@
 
             }
         </dl>
-
 
     </div>
 

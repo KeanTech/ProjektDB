@@ -3,100 +3,110 @@
     ViewData["Title"] = "SingleProjectView";
 }
 
+<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-12 py-2 card-color">
 
+    <dl class="">
 
-    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-12 py-2 card-color">
+        <dd class="card-color text-center">
+            <label style="font-size:20px; font-weight:bolder">Projekt info</label>
+            <table class="table table-bordered table-info">
+                <thead>
+                    <tr>
 
-        <dl class="">
+                        <th class="text-center" scope="row">Titel</th>
+                        <th class="text-center" scope="row">Beskrivelse</th>
+                        <th class="text-center" scope="row">Start dato</th>
+                        <th class="text-center" scope="row">Slut dato</th>
 
-            <dd class="card-color text-center">
-                <label style="font-size:20px; font-weight:bolder">Projekt info</label>
-                <table class="table table-bordered table-info">
-                    <thead>
-                        <tr>
+                    </tr>
+                </thead>
 
-                            <th class="text-center" scope="row">Titel</th>
-                            <th class="text-center" scope="row">Beskrivelse</th>
-                            <th class="text-center" scope="row">Log</th>
-                            <th class="text-center" scope="row">Start dato</th>
-                            <th class="text-center" scope="row">Slut dato</th>
+                <tbody>
 
-                        </tr>
-                    </thead>
+                    <tr>
+                        <td class="align-middle text-center">@Model.Title</td>
+                        <td class="align-middle text-center">@Model.Description</td>
+                        <td class="align-middle text-center">@Model.StartDate.ToString("dd-MM-yyyy")</td>
+                        <td class="align-middle text-center">@Model.EndDate.ToString("dd-MM-yyyy")</td>
+                    </tr>
 
+                </tbody>
+            </table>
+        </dd>
+
+        <dd class="text-center card-color">
+            <label asp-for="@Model.Team" style="font-weight:bold;"></label>
+            <table class="table table-bordered table-sm table-info">
+                <thead>
+                    <tr>
+                        <th scope="row">#</th>
+                        <th scope="row">Name</th>
+                        <th scope="row">Rolle</th>
+                    </tr>
+                </thead>
+                @for (int j = 0; j < Model.Team.Count; j++)
+                {
                     <tbody>
-
                         <tr>
-                            <td class="align-middle text-center">@Model.Title</td>
-                            <td class="align-middle text-center">@Model.Description</td>
-                            <td class="align-middle text-center">@Model.Log</td>
-                            <td class="align-middle text-center">@Model.StartDate.ToString("dd-MM-yyyy")</td>
-                            <td class="align-middle text-center">@Model.EndDate.ToString("dd-MM-yyyy")</td>
-                        </tr>
+                            <th scope="row" class="align-middle">
 
-                    </tbody>
-                </table>
-            </dd>
+                                @{ int count = j + 1;}@count
 
-            <dd class="text-center card-color">
-                <label asp-for="@Model.Team" style="font-weight:bold;"></label>
-                <table class="table table-bordered table-sm table-info">
-                    <thead>
-                        <tr>
-                            <th scope="row">#</th>
-                            <th scope="row">Name</th>
-                            <th scope="row">Rolle</th>
-                        </tr>
-                    </thead>
-                    @for (int j = 0; j < Model.Team.Count; j++)
-                    {
-                        <tbody>
-                            <tr>
-                                <th scope="row" class="align-middle">
+                            </th>
 
-                                    @{ int count = j + 1;}@count
+                            <td class="align-middle ">
+                                <form asp-action="SingleUserView" asp-controller="User">
+                                    <button class="btn btn-link btn-sm" type="submit" name="userName" value="@Model.Team[j].Name">@Model.Team[j].Name</button>
+                                </form>
 
-                                </th>
+                            </td>
 
-                                <td class="align-middle ">
+                            <td class="align-middle">
+                                @if (Model.Team[j].Roles.Count > 1)
+                                {
 
-                                    @Model.Team[j].Name
-
-                                </td>
-
-                                <td class="align-middle">
-                                    @if (Model.Team[j].Roles.Count > 1)
+                                    @for (int i = 0; i < Model.Team[j].Roles.Count; i++)
                                     {
 
-                                        @for (int i = 0; i < Model.Team[j].Roles.Count; i++)
+                                        @if (i >= Model.Team[j].Roles.Count - 1)
                                         {
-
-                                            @if (i >= Model.Team[j].Roles.Count -1)
-                                            {
-                                                <label>@Model.Team[j].Roles[i]</label>
-                                            }
-                                            else
-                                            {
-                                                <label>@Model.Team[j].Roles[i],</label>
-                                            }
-
+                                            <label>@Model.Team[j].Roles[i]</label>
+                                        }
+                                        else
+                                        {
+                                            <label>@Model.Team[j].Roles[i],</label>
                                         }
 
                                     }
-                                    else
-                                    {
 
-                                        @Model.Team[j].Roles[0]
+                                }
+                                else
+                                {
 
-                                    }
-                                </td>
-                            </tr>
-                        </tbody>
-                    }
+                                    @Model.Team[j].Roles[0]
 
-                </table>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+
+            </table>
+        </dd>
+
+        <dd class="text-center">
+            <form asp-action="WriteToLog" asp-controller="Project">
+                <button type="submit" value="@this.Model.Id" name="projectId" class="btn btn-outline-dark bg-info">Skriv i log</button>
+            </form>
+        </dd>
+
+        @foreach (var item in Model.Log)
+        {
+            <dd class="list-group-item-info">
+                @item
             </dd>
+        }
 
-        </dl>
+    </dl>
 
-    </div>
+</div>

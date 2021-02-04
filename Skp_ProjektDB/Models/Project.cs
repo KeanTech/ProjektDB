@@ -15,7 +15,7 @@ namespace Skp_ProjektDB.Models
         [DisplayName("Projekt beskrivelse")]
         public string Description { get; set; }
         
-        public string Log { get; set; }
+        public List<string> Log { get; set; }
         
         [DisplayName("Start dato")]
         public DateTime StartDate { get; set; }
@@ -28,7 +28,7 @@ namespace Skp_ProjektDB.Models
 
         public List<User> Team { get; set; }
 
-        public Project(string title, string description, string log, DateTime startDate, DateTime endDate, User projectleder, List<User> team)
+        public Project(string title, string description, List<string> log, DateTime startDate, DateTime endDate, User projectleder, List<User> team)
         {
             Title = title;
             Description = description;
@@ -37,6 +37,10 @@ namespace Skp_ProjektDB.Models
             EndDate = endDate;
             Projectleder = projectleder;
             Team = team;
+        }
+
+        public Project()
+        {
         }
     }
 }
