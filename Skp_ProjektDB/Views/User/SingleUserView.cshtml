@@ -4,7 +4,6 @@
     ViewData["Title"] = "SingleUserView";
 }
 
-
 <!-- This is the user display -->
 <div class="row container-fluid">
     <!-- The cards outer shell -->
@@ -13,50 +12,43 @@
         <!-- Makes a list for all the user information -->
         <dl>
 
-            <!-- This is the name description with a added checkbox -->
-            <dt>
-
-                <input style="margin-left: 10px; margin-top:10px;" type="checkbox" />
-                <label style="font-size:22px; text-align:center; width:100%;"> @Model.Name</label>
-
-            </dt>
-
-            <dt class="list-group-item-info">
-                <label style="margin-left:20px;" asp-for="@Model.Competence"></label>
-            </dt>
-
-            <dd class="list-group-item-info">
-
-                <ul style="list-style-type:none;">
-
-                    <li>
-                        @Model.Competence
+            <dd>
+                <ul class="list-group list-group-horizontal">
+                    <!-- Name details -->
+                    <li class="list-group-item list-group-item-info">
+                        <div class="list-group">
+                            <p><strong>Navn: </strong>@Model.Name</p>
+                            <p><strong>Email: </strong>@Model.Login@@zbc.dk</p>
+                        </div>
                     </li>
 
+                    <!-- Competence details -->
+                    <li class="list-group-item list-group-item-info">
+                        <div class="list-group">
+                            <label style="margin-left:20px; font-size:20px; font-weight:bolder;" asp-for="@Model.Competence"></label>
+                            <p style="margin-left:30px;">@Model.Competence</p>
+                        </div>
+                    </li>
 
+                    <!-- Roles -->
+                    <li class="list-group-item list-group-item-info">
+                        <div class="list-group">
+                            <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.Roles)</label>
+
+                            @for (int j = 0; j < Model.Roles.Count; j++)
+                            {
+                                <p style="margin-left:30px;">@Model.Roles[j]</p>
+                            }
+
+                        </div>
+
+                    </li>
                 </ul>
-            </dd>
 
-            <dt class="list-group-item-info">
-                <label style="margin-left:20px;">@Html.DisplayNameFor(m => m.Roles)</label>
-            </dt>
-
-            <dd class="list-group-item-info">
-
-                <ul style="list-style-type:none;">
-                    @for (int j = 0; j < Model.Roles.Count; j++)
-                    {
-
-                        <li>
-                            @Model.Roles[j]
-                        </li>
-
-                    }
-                </ul>
             </dd>
 
             <dd class="list-group-item-info border border-dark" style=" text-align:center;">
-                <label asp-for="@Model.Projects"></label>
+                <label style=" font-size:22px; font-weight:bold; " asp-for="@Model.Projects"></label>
 
                 <table class="table table-bordered table-sm table-info table-hover">
 
@@ -76,8 +68,8 @@
                             <tbody>
                                 <tr>
                                     <th scope="row">@{int count = j + 1;}@count</th>
-                                    <td height="10">
-                                        <!-- Make link to prject. post project id -->
+                                    <td>
+
                                         <form asp-action="SingleProjectView" asp-controller="Project" method="post">
                                             <button class="btn btn-link btn-sm" type="submit" name="projectName" value="@Model.Projects[j].Title">@Model.Projects[j].Title</button>
 

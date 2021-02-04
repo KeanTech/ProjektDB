@@ -3,13 +3,35 @@ using Skp_ProjektDB.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Skp_ProjektDB.Controllers
 {
     public class UserController : Controller
     {
-        private List<User> users;
+        public IActionResult UserLogin(string loginName, string password)
+        {
+            if (loginName == null)
+                return View();
+            else
+            {
+                ClaimsPrincipal principal = HttpContext.User as ClaimsPrincipal;
+
+                if(principal != null)
+                {
+                    foreach (Claim claim in principal.Claims)
+                    {
+                        var x = claim;
+                    }
+                }
+                //Make login here !!
+
+                return Redirect("/Project/ProjectOverView");
+            }
+        }
+
+
 
         /// <summary>
         /// Makes a detailed view of all users in db
@@ -17,10 +39,8 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult UserOverView()
         {
-            if (users != null)
-                return View(users);
-            else
-                return View(GetAllUsers());
+            //returns a list of User models
+            return View(GetAllUsers());
         }
 
         public IActionResult SingleUserView(string userName)
@@ -31,6 +51,7 @@ namespace Skp_ProjektDB.Controllers
         [HttpPost]
         public IActionResult UserSearch(string searchWord)
         {
+            List<User> users;
             if (searchWord == null)
             {
                 users = GetAllUsers();
