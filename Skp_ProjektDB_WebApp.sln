@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skp_ProjektDB", "Skp_ProjektDB\Skp_ProjektDB.csproj", "{B8ABD69E-831D-463A-82DD-3D931AC4BBBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skp_ProjektDB", "Skp_ProjektDB\Skp_ProjektDB.csproj", "{B8ABD69E-831D-463A-82DD-3D931AC4BBBF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkpDbLib", "..\..\source\repos\SkpDbLib\SkpDbLib\SkpDbLib.csproj", "{6DB0D208-C1B3-4508-AB59-39FA36532557}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{B8ABD69E-831D-463A-82DD-3D931AC4BBBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8ABD69E-831D-463A-82DD-3D931AC4BBBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8ABD69E-831D-463A-82DD-3D931AC4BBBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DB0D208-C1B3-4508-AB59-39FA36532557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DB0D208-C1B3-4508-AB59-39FA36532557}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DB0D208-C1B3-4508-AB59-39FA36532557}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DB0D208-C1B3-4508-AB59-39FA36532557}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
