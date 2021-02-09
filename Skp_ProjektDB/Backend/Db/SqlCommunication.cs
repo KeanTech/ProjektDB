@@ -1,8 +1,9 @@
 ﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace Skp_ProjektDB.Backend.Db
 {
-    internal class SqlCommands
+    internal class SqlCommunication
     {
         public DataSet GetData(string sqlCommand, SqlConnection connection)
         {

@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Skp_ProjektDB.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Skp_ProjektDB.Controllers
 {
@@ -20,12 +16,13 @@ namespace Skp_ProjektDB.Controllers
 
         public IActionResult HomePage()
         {
+            
+            
+
             return View();
         }
 
       
-      
-
         public IActionResult Privacy()
         {
             return View();

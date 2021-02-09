@@ -1,7 +1,5 @@
-﻿using SkpDbLib.Security;
+﻿using Skp_ProjektDB.Backend.Security;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Skp_ProjektDB.Backend.Managers
 {

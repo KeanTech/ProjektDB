@@ -1,15 +1,13 @@
-﻿using SkpDbLib.Db;
+﻿using Skp_ProjektDB.Backend.Db;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Skp_ProjektDB.Backend.Managers
 {
     public class Db : IDisposable
     {
         private Connection _dbConnection = new Connection();
-        private SqlCommands _sqlCommands = new SqlCommands();
+        private SqlCommunication _sqlCommands = new SqlCommunication();
 
         // add sql commands here => stored procedures prefered
         public DataSet GetData(string sqlCommand)

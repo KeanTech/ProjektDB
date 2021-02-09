@@ -1,4 +1,6 @@
-﻿namespace Skp_ProjektDB.Backend.Db
+﻿using System.Data.SqlClient;
+
+namespace Skp_ProjektDB.Backend.Db
 {
     internal class Connection
     {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using PdfSharpCore.Drawing;
+using PdfSharpCore.Pdf;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Skp_ProjektDB.Backend.Files

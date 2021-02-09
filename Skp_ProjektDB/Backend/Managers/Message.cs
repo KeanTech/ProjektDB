@@ -1,7 +1,5 @@
-﻿using SkpDbLib.Messages;
+﻿using Skp_ProjektDB.Backend.Messages;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Skp_ProjektDB.Backend.Managers
 {
