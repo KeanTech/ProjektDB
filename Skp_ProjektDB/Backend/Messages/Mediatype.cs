@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SkpDbLib.Messages
+namespace Skp_ProjektDB.Backend.Messages
 {
     public enum Mediatype
     {

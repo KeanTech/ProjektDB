@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SkpDbLib.Files
+namespace Skp_ProjektDB.Backend.Files
 {
     internal class FileReader
     {

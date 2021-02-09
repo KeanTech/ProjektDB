@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Security;
-using System.Text;
-
-namespace SkpDbLib.Db
+﻿namespace Skp_ProjektDB.Backend.Db
 {
     internal class Connection
     {

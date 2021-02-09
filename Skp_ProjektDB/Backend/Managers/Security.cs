@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SkpDbLib.Managers
+namespace Skp_ProjektDB.Backend.Managers
 {
     public class Security : IDisposable
     {

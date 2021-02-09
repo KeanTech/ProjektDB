@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SkpDbLib.Managers
+namespace Skp_ProjektDB.Backend.Managers
 {
     public class Files : IDisposable
     {

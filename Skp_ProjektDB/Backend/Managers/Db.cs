@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace SkpDbLib.Managers
+namespace Skp_ProjektDB.Backend.Managers
 {
     public class Db : IDisposable
     {

@@ -1,11 +1,7 @@
-﻿using PdfSharpCore.Drawing;
-using PdfSharpCore.Pdf;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-namespace SkpDbLib.Files
+namespace Skp_ProjektDB.Backend.Files
 {
     /// <summary>
     /// Class is NOT needed in prod

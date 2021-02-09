@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SkpDbLib.Security
+namespace Skp_ProjektDB.Backend.Security
 {
     internal class Decryption
     {
