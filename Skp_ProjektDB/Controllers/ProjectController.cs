@@ -16,9 +16,10 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult SingleProjectView(string projectName)
         {
+
             var project = GetProjects().Where(x => x.Title == projectName).FirstOrDefault();
             project.Team = UserController.GetAllUsers();
-            return View(project);
+            return View(new ProjectModel(project.Title, project.Description, project.Log, project.StartDate, project.EndDate, project.Projectleder, project.Team));
         }
 
         /// <summary>
@@ -29,9 +30,15 @@ namespace Skp_ProjektDB.Controllers
         {
             var users = UserController.GetAllUsers();
             var projects = GetProjects();
-            projects[0].Team = users;
+            projects.OrderBy(x => x.Title.ToLower() == "a");
 
-            return View(projects);
+            List<ProjectModel> projectModels = new List<ProjectModel>();
+            foreach (var project in projects)
+            {
+                projectModels.Add(new ProjectModel(project.Title, project.Description, project.Log, project.StartDate, project.EndDate, project.Projectleder, project.Team));
+            }
+
+            return View(projectModels);
         }
 
         /// <summary>
@@ -46,12 +53,39 @@ namespace Skp_ProjektDB.Controllers
 
         public IActionResult AddToLog(string logString, int projectId)
         {
+            //Check authentication
+
             var x = User.Identity.IsAuthenticated;
             //Save the log to db
             //add username to logstring 
             var project = GetProjects().Where(x => x.Id == projectId).FirstOrDefault();
-            project.Log.Add(logString);
+
             return Redirect("/Project/ProjectOverView");
+        }
+
+        //----------------------------------------------------Search methods
+        public IActionResult ProjectSort(bool name, bool description, bool log, bool projectleader)
+        {
+            var users = UserController.GetAllUsers();
+            var projects = GetProjects();
+            List<ProjectModel> projectModels = new List<ProjectModel>();
+            foreach (var item in projects)
+            {
+                projectModels.Add(new ProjectModel(
+                    item.Title,
+                    item.Description,
+                    item.Log, item.StartDate,
+                    item.EndDate,
+                    item.Projectleder,
+                    item.Team
+                    )
+                {
+                    NameCheckbox = name,
+                    DescriptionCheckbox = description
+                }) ;
+            }
+
+            return View("ProjectOverView", projectModels);
         }
 
         public IActionResult ProjectSearch(string projectName)
@@ -69,8 +103,6 @@ namespace Skp_ProjektDB.Controllers
             {
                 return View("ProjectOverView", GetProjects());
             }
-
-
         }
 
         //-----------------------------------------------------CRUD Methods

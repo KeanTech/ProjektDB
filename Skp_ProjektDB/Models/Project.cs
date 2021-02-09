@@ -38,9 +38,5 @@ namespace Skp_ProjektDB.Models
             Projectleder = projectleder;
             Team = team;
         }
-
-        public Project()
-        {
-        }
     }
 }

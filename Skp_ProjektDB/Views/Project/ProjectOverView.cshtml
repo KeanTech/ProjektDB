@@ -1,23 +1,75 @@
-﻿@model List<Skp_ProjektDB.Models.Project>
+﻿@model List<Skp_ProjektDB.Models.ProjectModel>
 
 @{
     ViewData["Title"] = "ProjectOverView";
 }
 
 <!-- This is used for search it takes in a string through input and sends it to ProjectController via a post method -->
-@using (Html.BeginForm("ProjectSearch", "Project", FormMethod.Post))
-{
-    <input name="projectName" type="text" placeholder="Søg efter projekt her" />
-    <input type="submit" />
-}
+
 
 <div class="row card-color mt-3">
 
     <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-12 py-2">
+        <div>
+
+            <dl class="list-group list-group-horizontal">
+                @using (Html.BeginForm("ProjectSearch", "Project", FormMethod.Post))
+                {
+
+                    <dd class="list-group list-group-horizontal list-group-item-info">
+                        <div class="list-group-item list-group-item-info">
+
+                            <input name="projectName" type="text" placeholder="Søg efter projekt her" />
+                            <input type="submit" value="Søg" />
+
+                        </div>
+
+                        <div class="form-check form-check-inline ml-1">
+
+                            <input name="nameCheck" class="form-check-input" type="checkbox" value="" id="namecheckbox" />
+                            <label class="form-check-label" for="namecheckbox">
+                                Navn
+                            </label>
+
+                        </div>
+
+                        <div class="form-check form-check-inline">
+
+                            <input name="leaderCheck" class="form-check-input" type="checkbox" value="" id="projectleadercheckbox" />
+                            <label class="form-check-label" for="projectleadercheckbox">
+                                Projektleder
+                            </label>
+
+                        </div>
+
+                        <div class="form-check form-check-inline">
+
+                            <input name="descriptionCheck" class="form-check-input" type="checkbox" value="" id="descriptioncheckbox" />
+                            <label class="form-check-label" for="descriptioncheckbox">
+                                Beskrivelse
+                            </label>
+
+                        </div>
+
+                        <div class="form-check form-check-inline">
+
+                            <input dirname="logCheck" class="form-check-input" type="checkbox" value="" id="logcheckbox" name="leadercheckbox" />
+                            <label class="form-check-label" for="logcheckbox">
+                                Log
+                            </label>
+
+                        </div>
+                    </dd>
+
+
+                }
+            </dl>
+
+        </div>
 
         <dl class="">
 
-            <dt class="text-center">
+            <dt class="text-center bg-info">
                 <label style="font-size:20px; font-weight:bolder">Projekt info</label>
             </dt>
             @for (int i = 0; i < Model.Count; i++)
@@ -27,10 +79,27 @@
                     <table class="table table-bordered table-info">
                         <thead>
                             <tr>
+                                @if (Model[i].NameCheckbox == true)
+                                {
+                                    <th class="text-center" scope="col">Titel</th>
+                                }
 
-                                <th class="text-center" scope="col">Titel</th>
-                                <th class="text-center" scope="col">Beskrivelse</th>
-                                <th class="text-center" scope="col">Log</th>
+                                @if (Model[i].LogCheckbox == true)
+                                {
+                                    <th class="text-center" scope="col">Beskrivelse</th>
+
+                                }
+
+                                @if (Model[i].LogCheckbox == true)
+                                {
+                                    <th class="text-center" scope="col">Log</th>
+
+                                }
+
+                                @if (Model[i].ProjectLeaderCheckbox == true)
+                                {
+                                    <th class="text-center" scope="col">Projektleder</th>
+                                }
                                 <th class="text-center" scope="col">Start dato</th>
                                 <th class="text-center" scope="col">Slut dato</th>
 
@@ -40,16 +109,29 @@
                         <tbody>
 
                             <tr>
+                                @if (Model[i].NameCheckbox == true)
+                                {
+                                    <td class="align-middle text-center">
 
-                                <td class="align-middle text-center">
-                                    <form asp-action="SingleProjectView" asp-controller="Project">
-                                        <button class="btn btn-link btn-sm" type="submit" name="projectName" value="@Model[i].Title">
-                                            @Model[i].Title
-                                        </button>
-                                        
-                                    </form></td>
-                                <td class="align-middle text-center">@Model[i].Description</td>
-                                <td class="align-middle text-center">@Model[i].Log[Model[i].Log.Count - 1]</td>
+                                        <form asp-action="SingleProjectView" asp-controller="Project">
+
+                                            <button class="btn btn-link btn-sm" type="submit" name="projectName" value="@Model[i].Title">
+                                                @Model[i].Title
+                                            </button>
+
+                                        </form>
+                                    </td>
+                                }
+
+                                @if (Model[i].DescriptionCheckbox == true)
+                                {
+                                    <td class="align-middle text-center">@Model[i].Description</td>
+                                }
+
+                                @if (Model[i].LogCheckbox == true)
+                                {
+                                    <td class="align-middle text-center">@Model[i].Log[Model[i].Log.Count - 1]</td>
+                                }
                                 <td class="align-middle text-center">@Model[i].StartDate.ToString("dd-MM-yyyy")</td>
                                 <td class="align-middle text-center">@Model[i].EndDate.ToString("dd-MM-yyyy")</td>
 
