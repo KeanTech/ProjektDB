@@ -16,7 +16,6 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult SingleProjectView(string projectName)
         {
-
             var project = GetProjects().Where(x => x.Title == projectName).FirstOrDefault();
             project.Team = UserController.GetAllUsers();
             return View(new ProjectModel(project.Title, project.Description, project.Log, project.StartDate, project.EndDate, project.Projectleder, project.Team));
@@ -41,6 +40,7 @@ namespace Skp_ProjektDB.Controllers
             return View(projectModels);
         }
 
+        [HttpGet]
         /// <summary>
         /// Used to get the AddToLog view.
         /// </summary>
@@ -51,11 +51,12 @@ namespace Skp_ProjektDB.Controllers
             return View(GetProjects().Where(x => x.Id == projectId).FirstOrDefault());
         }
 
+        [HttpPost]
         public IActionResult AddToLog(string logString, int projectId)
         {
             //Check authentication
 
-            var x = User.Identity.IsAuthenticated;
+            
             //Save the log to db
             //add username to logstring 
             var project = GetProjects().Where(x => x.Id == projectId).FirstOrDefault();
@@ -64,46 +65,37 @@ namespace Skp_ProjektDB.Controllers
         }
 
         //----------------------------------------------------Search methods
-        public IActionResult ProjectSort(bool name, bool description, bool log, bool projectleader)
-        {
-            var users = UserController.GetAllUsers();
-            var projects = GetProjects();
-            List<ProjectModel> projectModels = new List<ProjectModel>();
-            foreach (var item in projects)
-            {
-                projectModels.Add(new ProjectModel(
-                    item.Title,
-                    item.Description,
-                    item.Log, item.StartDate,
-                    item.EndDate,
-                    item.Projectleder,
-                    item.Team
-                    )
-                {
-                    NameCheckbox = name,
-                    DescriptionCheckbox = description
-                }) ;
-            }
-
-            return View("ProjectOverView", projectModels);
-        }
-
-        public IActionResult ProjectSearch(string projectName)
+  
+        public IActionResult ProjectSearch(string projectName, bool nameCheck, bool projectleaderCheck, bool descriptionCheck, bool logCheck)
         {
             if (projectName != null)
             {
-                List<Project> searchedProject = GetProjects().FindAll(x => x.Title.ToLower().Contains(projectName.ToLower()));
+                List<ProjectModel> searchedProject = GetProjects().FindAll( x => x.Title.ToLower().Contains(projectName.ToLower() ));
+                SortOutSearchCriteria(searchedProject, nameCheck, projectleaderCheck, descriptionCheck, logCheck); 
 
                 if (searchedProject != null)
                     return View("ProjectOverView", searchedProject);
                 else
-                    return View("ProjectOverView", GetProjects());
+                    return View("ProjectOverView", SortOutSearchCriteria( GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck ));
             }
             else
             {
-                return View("ProjectOverView", GetProjects());
+                return View("ProjectOverView", SortOutSearchCriteria(GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
             }
         }
+
+        private List<ProjectModel> SortOutSearchCriteria(List<ProjectModel> projectModels, bool nameCheck, bool projectleaderCheck, bool descriptionCheck, bool logCheck)
+        {
+            foreach (var model in projectModels)
+            {
+                model.NameCheckbox = nameCheck;
+                model.ProjectLeaderCheckbox = projectleaderCheck;
+                model.DescriptionCheckbox = descriptionCheck;
+                model.LogCheckbox = logCheck;
+            }
+            return projectModels;
+        }
+
 
         //-----------------------------------------------------CRUD Methods
 
@@ -117,10 +109,10 @@ namespace Skp_ProjektDB.Controllers
             return null;
         }
 
-        public static List<Project> GetProjects() //Made static for testing
+        public static List<ProjectModel> GetProjects() //Made static for testing
         {
-            return new List<Project>() {
-                new Project(
+            return new List<ProjectModel>() {
+                new ProjectModel(
                     "SkpProjektDB",
                     "Dette er en test på en projektbeskrivelse",
                     new List<string>(){ "Kenneth: Jeg er igang med frontend, User overview er done", "Martin: Jeg er i gang med backend all good" },
@@ -129,7 +121,7 @@ namespace Skp_ProjektDB.Controllers
                     new Models.User("Kenneth","kean513",new List<Types.Roles>() { Types.Roles.Projektleder, Types.Roles.Udvikler }),
                     new List<User>()
                         ),
-                new Project(
+                new ProjectModel(
                     "SkpUdLån",
                     "Hvis bare",
                     new List<string>(){ "Line: Ønske om mere info!" },

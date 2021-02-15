@@ -13,18 +13,10 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult UserLogin(string loginName, string password)
         {
             if (loginName == null)
-                return View();
+                return BadRequest();
             else
             {
-                ClaimsPrincipal principal = HttpContext.User as ClaimsPrincipal;
 
-                if(principal != null)
-                {
-                    foreach (Claim claim in principal.Claims)
-                    {
-                        var x = claim;
-                    }
-                }
                 //Make login here !!
 
                 return Redirect("/Project/ProjectOverView");
@@ -95,9 +87,9 @@ namespace Skp_ProjektDB.Controllers
                 new User("Emil", "Emi1213", new List<Types.Roles>(){ Types.Roles.Udvikler }) { Competence = "H2" }
             };
 
-            users[0].Projects.Add(ProjectController.GetProjects()[0]);
-            users[1].Projects.Add(ProjectController.GetProjects()[0]);
-            users[2].Projects.Add(ProjectController.GetProjects()[0]);
+            users[0].Projects.Add((Project)ProjectController.GetProjects()[0]);
+            users[1].Projects.Add((Project)ProjectController.GetProjects()[0]);
+            users[2].Projects.Add((Project)ProjectController.GetProjects()[0]);
 
             return users;
         }

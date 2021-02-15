@@ -24,6 +24,7 @@ namespace Skp_ProjektDB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            // Try add some policys
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

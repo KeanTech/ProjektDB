@@ -18,7 +18,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <p class="text-dark" style="font-weight:bolder; font-size:22px;">ZBC</p>
+                    <p class="text-dark" style="font-weight:bolder; font-size:24px;"><strong>ZBC</strong></p>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="HomePage">Home</a>
@@ -26,9 +26,31 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item align-content-lg-end">
-                            <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="UserLogin">Login</a>
+                        <li class="nav-item align-content-lg-end ml-auto">
+                            
+                                <button class="btn btn-outline-info bg-dark" type="button" data-toggle="collapse" data-target="#collapselogin" aria-expanded="false" aria-controls="collapselogin">
+                                Log Ind
+                                </button>
+                            
+                                <div class="collapse list-group" id="collapselogin">
+                                    <form asp-action="UserLogin" asp-controller="User">
+                                        
+                                            <div class="list-group-item list-group-item-info">
+                                                <label class="align-top">Login</label>
+                                                <br />
+                                                <input type="text" name="loginName" placeholder="Login name (Unilogin)" required />
+                                            </div>
+                                            <div class="list-group-item list-group-item-info">
+                                                <label>Kodeord</label>
+                                                <br />
+                                                <input type="password" name="password" required />
+                                            <input class="btn btn-outline-info bg-dark" type="submit" value="Login" />
+                                            </div>
+                                            
+                                    </form>
+                                </div>
                         </li>
+                        
                     </ul>
 
                 </div>
@@ -43,7 +65,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container-fluid">
-            &copy; 2021 - ZBC-Skp Ringsted - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.Now.ToString("yyyy") - ZBC-Skp Ringsted - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
