@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Skp_ProjektDB.DataClasses;
 using Skp_ProjektDB.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,13 @@ namespace Skp_ProjektDB.Controllers
 {
     public class ProjectController : Controller
     {
+        private readonly IConfiguration configuration;
+
+        public ProjectController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         /// <summary>
         /// This is a single view of a prjects, that a user selects from another view.
         /// </summary>
@@ -56,7 +65,6 @@ namespace Skp_ProjektDB.Controllers
         {
             //Check authentication
 
-            
             //Save the log to db
             //add username to logstring 
             var project = GetProjects().Where(x => x.Id == projectId).FirstOrDefault();
@@ -80,7 +88,7 @@ namespace Skp_ProjektDB.Controllers
             }
             else
             {
-                return View("ProjectOverView", SortOutSearchCriteria(GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
+                return View("ProjectOverView", SortOutSearchCriteria( GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck ));
             }
         }
 
@@ -111,26 +119,7 @@ namespace Skp_ProjektDB.Controllers
 
         public static List<ProjectModel> GetProjects() //Made static for testing
         {
-            return new List<ProjectModel>() {
-                new ProjectModel(
-                    "SkpProjektDB",
-                    "Dette er en test på en projektbeskrivelse",
-                    new List<string>(){ "Kenneth: Jeg er igang med frontend, User overview er done", "Martin: Jeg er i gang med backend all good" },
-                    DateTime.Now.Date,
-                    DateTime.Now.Date.AddDays(60),
-                    new Models.User("Kenneth","kean513",new List<Types.Roles>() { Types.Roles.Projektleder, Types.Roles.Udvikler }),
-                    new List<User>()
-                        ),
-                new ProjectModel(
-                    "SkpUdLån",
-                    "Hvis bare",
-                    new List<string>(){ "Line: Ønske om mere info!" },
-                    DateTime.Now.Date,
-                    DateTime.Now.Date,
-                    new User("Jesper", "jkd431", new List<Types.Roles>(){ Types.Roles.Projektleder }),
-                    new List<User>()
-                    )
-            };
+            ApplicationDbContext applicationDbContext = new ApplicationDbContext(options => { });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Skp_ProjektDB.Models;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,21 @@ namespace Skp_ProjektDB.Controllers
 {
     public class UserController : Controller
     {
+        private readonly IConfiguration configuration;
+
+        public UserController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         public IActionResult UserLogin(string loginName, string password)
         {
             if (loginName == null)
                 return BadRequest();
             else
             {
+                //Get connection string 
+                //configuration.GetConnectionString("SkpDb");
 
                 //Make login here !!
 
