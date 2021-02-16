@@ -16,9 +16,6 @@ namespace Skp_ProjektDB.Controllers
 
         public IActionResult HomePage()
         {
-            
-            
-
             return View();
         }
 

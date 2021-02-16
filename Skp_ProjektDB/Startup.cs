@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Skp_ProjektDB.DataClasses;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,10 @@ namespace Skp_ProjektDB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            // Try add some policys
+            services.AddDbContext<ApplicationDbContext>(options => 
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("SkpDb"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -23,8 +23,6 @@ namespace Skp_ProjektDB.Controllers
             }
         }
 
-
-
         /// <summary>
         /// Makes a detailed view of all users in db
         /// </summary>
