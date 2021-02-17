@@ -18,6 +18,12 @@ namespace Skp_ProjektDB.Backend.Managers
             return _sqlCommands.GetData(sqlCommand, _dbConnection.GetConnection());
         }
 
+
+        #region --------------------------------------------------------------------------------------------------- vv Project CRUD Methods vv 
+
+        #endregion --------------------------------------------------------------------------------------------------- ^^ Project CRUD Methods ^^
+
+        #region --------------------------------------------------------------------------------------------------- vv User CRUD Methods vv
         public byte[] GetSalt(string username)
         {
             DataSet data = _sqlCommands.GetSalt(username, _dbConnection.GetConnection());
@@ -75,6 +81,8 @@ namespace Skp_ProjektDB.Backend.Managers
         {
             _sqlCommands.UpdateUser(_dbConnection.GetConnection(), name, competence, hash, salt, username, roles);
         }
+        #endregion --------------------------------------------------------------------------------------------------- ^^ User CRUD Methods ^^ 
+
 
         public void SetConnection(string connectionString)
         {
