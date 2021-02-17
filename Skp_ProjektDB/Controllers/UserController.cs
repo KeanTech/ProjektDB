@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Skp_ProjektDB.Models;
+using Skp_ProjektDB.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Skp_ProjektDB.Controllers
@@ -12,10 +14,13 @@ namespace Skp_ProjektDB.Controllers
     public class UserController : Controller
     {
         private readonly IConfiguration configuration;
+        private Backend.Managers.Db db = new Backend.Managers.Db();
+        private Backend.Managers.Security security = new Backend.Managers.Security();
 
         public UserController(IConfiguration configuration)
         {
             this.configuration = configuration;
+            db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
 
         public IActionResult UserLogin(string loginName, string password)
@@ -28,14 +33,29 @@ namespace Skp_ProjektDB.Controllers
                 //configuration.GetConnectionString("SkpDb");
 
                 //Make login here !!
+                byte[] salt = db.GetSalt(loginName);
+                if (salt != null)
+                {
+                    string encrypted = security.Encrypt(Encoding.UTF8.GetBytes(password), salt);
+                    string hash = security.Hash(Encoding.UTF8.GetBytes(encrypted));
+
+                    if (hash == db.GetHash(loginName)) // if hashes matches == password is correct
+                    {
+                        // gets the user who logged in
+                        User user = db.GetUser(loginName);
+                    }
+                    else
+                    {
+                        // password is wrong
+                    }
+                }
+                else
+                {
+                    // username is incorrect!
+                }
 
                 return Redirect("/Project/ProjectOverView");
             }
-        }
-
-        public static List<User> GetAllUsers()
-        {
-            return new List<User>();
         }
 
         /// <summary>
@@ -45,12 +65,12 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult UserOverView()
         {
             //returns a list of User models
-            return View(GetAllUsers());
+            return View(db.GetAllUsers());
         }
 
         public IActionResult SingleUserView(string userName)
         {
-            return View(GetAllUsers().Where(x => x.Name == userName).FirstOrDefault());
+            return View(db.GetUser(userName));
         }
 
         [HttpPost]
@@ -59,17 +79,17 @@ namespace Skp_ProjektDB.Controllers
             List<User> users;
             if (searchWord == null)
             {
-                users = GetAllUsers();
+                users = db.GetAllUsers();
             }
             else
             {
-                users = GetAllUsers().FindAll(x => x.Name.ToLower().Contains(searchWord.ToLower()));
+                users = db.GetAllUsers().FindAll(x => x.Name.ToLower().Contains(searchWord.ToLower()));
             }
             return View("UserOverView", users);
         }
 
         //------------------------------------------------------------CRUD methods
-        
+
         /// <summary>
         /// This is used to save newly created users
         /// </summary>
@@ -86,13 +106,22 @@ namespace Skp_ProjektDB.Controllers
             }
         }
 
+        /// <summary>
+        /// This is used to get user from Db
+        /// </summary>
+        /// <returns></returns>
+        public User ReadUser(string username)
+        {
+            return db.GetUser(username);
+        }
 
         /// <summary>
         /// This is used to update user data
         /// </summary>
         /// <returns></returns>
-        public IActionResult EditUser()
+        public IActionResult UpdateUser(string name, string competence, string hash, string salt, string username, List<Roles> roles)
         {
+            db.UpdateUser(name, competence, hash, salt, username, roles);
             return View();
         }
 
@@ -100,8 +129,9 @@ namespace Skp_ProjektDB.Controllers
         /// This is used to delete users from Db
         /// </summary>
         /// <returns></returns>
-        public IActionResult DeleteUser()
+        public IActionResult DeleteUser(string username)
         {
+            db.DeleteUser(username);
             return View();
         }
     }
