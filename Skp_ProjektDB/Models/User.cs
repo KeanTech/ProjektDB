@@ -9,6 +9,10 @@ namespace Skp_ProjektDB.Models
 {
     public class User
     {
+        public User()
+        {
+        }
+
         [DisplayName("Navn")]
         public string Name { get; set; }
 

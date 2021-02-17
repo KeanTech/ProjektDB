@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Skp_ProjektDB.Types;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace Skp_ProjektDB.Models
         [DisplayName("Slut dato")]
         public DateTime EndDate { get; set; }
 
+        public Status Status { get; set; }
+
         [DisplayName("Projektleder")]
         public User Projectleder { get; set; }
 
@@ -38,5 +41,7 @@ namespace Skp_ProjektDB.Models
             Projectleder = projectleder;
             Team = team;
         }
+
+        
     }
 }

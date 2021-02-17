@@ -1,15 +1,8 @@
 Use master
 Go
 
-Drop Database ProjectDatabase
+Use SkpOpgWeb
 Go
-
-Create database ProjectDatabase
-Go
-
-Use ProjectDatabase
-Go
-
 
 Create TABLE Users(
 Name varchar(50) NOT NULL,
@@ -191,32 +184,10 @@ Select Name from Teams WHERE ID = @ID
 Go
 
 
+SELECT * FROM Projects;
 
---Test data vv
-Insert into Users
-VALUES
-('Mads', 'C#', 'Mads12345', 0x5468697320697320612074657374, 0x5468697320697320612074657374),
-('Martin', 'C#', 'Martin12345', 0x5468697320697320612074657374, 0x5468697320697320612074657374),
-('Kenneth', 'C#', 'Kenneth12345', 0x5468697320697320612074657374, 0x5468697320697320612074657374)
-Go
+SELECT * FROM Users;
 
-Insert into Projects
-Values
-('In progress', 'DatabaseProject', 'Description', 'Log', GETDATE(), GETDATE(), 'Kenneth12345'),
-('Paused', 'TestProject', 'This is a test', 'Log can be seen here', GETDATE(), GETDATE(), 'Mads12345'),
-('Finished', 'AnotherTestProject', 'This is also a test', 'Log log log', GETDATE(), GETDATE(), 'Martin12345')
-GO
+INSERT INTO Users(Name, Competence, Login, Salt, Hash) VALUES ('Kenneth Andersen', 'H2', 'kenn229k', 01230848129, 910293701972);
 
-Execute AddUserToTeam 1, 'Mads';
-Execute AddUserToTeam 1, 'Martin';
-Execute AddUserToTeam 1, 'Kenneth';
-Go
---Test data ^^
-
-
-Select * from Projects
-Select * from Users
-Select * from Teams
-
-
-
+INSERT INTO Projects(Status, Title, Description, Log, StartDate, EndDate, ProjectLeader) VALUES ('Begyndt', 'SkpDb', 'Dette er en beskrivelse', 'Kenneth: hej med jer', GETDATE(), GETDATE(), 'kenn229k');

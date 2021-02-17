@@ -33,6 +33,11 @@ namespace Skp_ProjektDB.Controllers
             }
         }
 
+        public static List<User> GetAllUsers()
+        {
+            return new List<User>();
+        }
+
         /// <summary>
         /// Makes a detailed view of all users in db
         /// </summary>
@@ -64,49 +69,29 @@ namespace Skp_ProjektDB.Controllers
         }
 
         //------------------------------------------------------------CRUD methods
+        
         /// <summary>
         /// This is used to save newly created users
         /// </summary>
         /// <returns></returns>
-        public void CreateUser()
+        public IActionResult CreateUser(User user)
         {
-            //Save user in Db
+            if(user.Name == null)
+            {
+                return View();
+            }
+            else
+            {
+                return Redirect("/User/UserOverView");
+            }
         }
 
-        /// <summary>
-        /// This is used to get user from Db
-        /// </summary>
-        /// <returns></returns>
-        public User ReadUser(int id)
-        {
-            return new User("", "", new List<Types.Roles>());
-        }
-
-        /// <summary>
-        /// This is used to get all users from Db
-        /// </summary>
-        /// <returns></returns>
-        public static List<User> GetAllUsers() //Made static for testing
-        {
-            //Setup DbManager here and return the full list of users
-            List<User> users = new List<User>() {
-                new User("Martin", "mar221", new List<Types.Roles>() { Types.Roles.Udvikler }) { Competence = "H2" },
-                new User("Kenneth", "kean513", new List<Types.Roles>(){ Types.Roles.Projektleder, Types.Roles.Udvikler }) { Competence = "H2" },
-                new User("Emil", "Emi1213", new List<Types.Roles>(){ Types.Roles.Udvikler }) { Competence = "H2" }
-            };
-
-            users[0].Projects.Add((Project)ProjectController.GetProjects()[0]);
-            users[1].Projects.Add((Project)ProjectController.GetProjects()[0]);
-            users[2].Projects.Add((Project)ProjectController.GetProjects()[0]);
-
-            return users;
-        }
 
         /// <summary>
         /// This is used to update user data
         /// </summary>
         /// <returns></returns>
-        public IActionResult UpdateUser()
+        public IActionResult EditUser()
         {
             return View();
         }
