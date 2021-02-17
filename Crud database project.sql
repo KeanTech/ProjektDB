@@ -1,9 +1,16 @@
 Use master
 Go
 
+Drop Database SkpOpgWeb
+Go
+
+CREATE DATABASE SkpOpgWeb
+GO
+
 Use SkpOpgWeb
 Go
 
+------------------Create Tables
 Create TABLE Users(
 Name varchar(50) NOT NULL,
 Competence varchar(250),
@@ -13,32 +20,41 @@ Hash varbinary(20) NOT NULL
 )
 Go
 
-Create table Projects(
-ID int primary key identity(1,1), 
-Status varchar(20) NOT NULL,
-Title varchar(250) NOT NULL, 
-Description varchar(250), 
-Log varchar(250), 
-StartDate DateTime NOT NULL, 
-EndDate DateTime,
-ProjectLeader varchar(20) FOREIGN KEY REFERENCES Users(Login) NOT NULL
-)
-Go
-
---List of members that are working on every project.
-Create table Teams(
-ID int NOT NULL FOREIGN KEY REFERENCES Projects(ID),
-Name varchar (20) NOT NULL
-)
-Go
-
-
 Create table Roles(
 Username varchar(20) NOT NULL FOREIGN KEY REFERENCES Users(Login),
 Role varchar (20) NOT NULL
 )
 Go
 
+Create table Projects(
+ID int primary key identity(1,1), 
+Status varchar(20) NOT NULL,
+Title varchar(250) NOT NULL, 
+Description varchar(250),  
+StartDate DateTime NOT NULL, 
+EndDate DateTime NOT NULL,
+ProjectLeader varchar(20) FOREIGN KEY REFERENCES Users(Login) NOT NULL
+)
+Go
+
+--Table of members that are working on every project.
+Create table Teams(
+ID int NOT NULL FOREIGN KEY REFERENCES Projects(ID),
+Name varchar (20) NOT NULL
+)
+Go
+
+--Table of logs that are assosiated with each project
+Create Table Logs(
+ID int NOT NULL FOREIGN KEY REFERENCES Projects(ID),
+Log varchar (250),
+Username varchar(20) NOT NULL FOREIGN KEY REFERENCES Users(Login),
+Date dateTime
+)
+Go
+----------------
+
+---------------------User Procs
 --Register user
 CREATE PROC CreateUser
 @Name varchar(50),
@@ -50,7 +66,6 @@ AS
 	Insert into Users 
 	VALUES(@Name, @Competence, @Login, @Salt, @Hash)
 Go
-
 
 --View all Users in database
 CREATE PROC ViewAllUsers
@@ -106,19 +121,63 @@ AS
 	WHERE Login = @Login
 	Go
 Go
+--------------------
+--------------------Roles Procs
+--
+Create Proc AddRoleToUser
+@Username varchar(20),
+@Role varchar(20)
+AS
+    Insert into Roles
+    Values(@Username, @Role)
+Go
 
+ 
+--View all roles on User
+Create proc ViewUsersRoles
+@Username varchar(20)
+As
+Select Role from Roles
+Where Username = @Username
+Go
+
+
+--Remove role from User
+Create Proc RemoveRole
+@Username varchar(20),
+@Role varchar(20)
+As
+Delete Roles
+Where 
+Username = @Username
+AND
+Role = @Role
+Go
+
+--Update Role
+Create Proc UpdateUserRole
+@Username varchar(20),
+@Role varchar(20)
+AS
+Update Roles 
+SET
+Role = @Role
+WHERE 
+Username = @Username
+GO
+--------------------Project procs
 --Create new project
 CREATE PROC CreateProject
 @Status varchar(20),
 @Title varchar(250), 
 @Description varchar(250),
-@Log varchar(250),
 @StartDate dateTime,
 @EndDate dateTime,
 @ProjectLeader varchar(20)
 AS
 	Insert into Projects 
-	VALUES(@Status, @Title, @Description, @Log, @StartDate, @EndDate, @ProjectLeader)
+	VALUES(@Status, @Title, @Description, @StartDate, @EndDate, @ProjectLeader)
+
 Go
 
 --View all projects in database
@@ -141,7 +200,6 @@ CREATE PROC UpdateProject
 @Status varchar(20),
 @Title varchar(250), 
 @Description varchar(250),
-@Log varchar(250),
 @StartDate dateTime,
 @EndDate dateTime,
 @ProjectLeader varchar(30)
@@ -151,29 +209,47 @@ AS
 	Status = @Status,
 	Title = @Title,
 	Description = @Description,
-	Log = @Log,
 	StartDate = @StartDate,
 	EndDate = @EndDate,
 	ProjectLeader = @ProjectLeader
 	WHERE ID = @ID
-	Go
-	
 Go
 
 --Delete Project by ID
 CREATE PROC DeleteProject
 @ID int
 AS
+	DELETE FROM Logs
+	WHERE ID = @ID
+
+	DELETE FROM Teams
+	WHERE ID = @ID
+
 	DELETE FROM Projects
 	WHERE ID = @ID
 Go
+-----------------
 
+-----------------Teams procs
 --Add user to team.
 Create proc AddUserToTeam(
 @ID int,
 @Name varchar(20))
 AS
-Insert into Teams values(@ID, @Name)
+
+Insert into Teams
+VALUES(@ID, @Name)
+Go
+
+Create Proc RemoveUserFromTeam(
+@ID int,
+@Name varchar(20))
+AS
+DELETE FROM Teams
+Where 
+ID = @ID 
+AND
+Name = @Name
 Go
 
 --View members of team
@@ -182,12 +258,21 @@ CREATE PROC ViewTeamByID
 AS
 Select Name from Teams WHERE ID = @ID
 Go
+------------------------
+
+------------------------Log procs
+--Add log
+Create proc AddLogToTeam(
+@ID int, 
+@Log varchar(250),
+@Username varchar(20)
+)
+AS
+Insert into Logs
+VALUES(@ID, @Log, @Username, GETDATE())
+GO
 
 
-SELECT * FROM Projects;
 
-SELECT * FROM Users;
 
-INSERT INTO Users(Name, Competence, Login, Salt, Hash) VALUES ('Kenneth Andersen', 'H2', 'kenn229k', 01230848129, 910293701972);
 
-INSERT INTO Projects(Status, Title, Description, Log, StartDate, EndDate, ProjectLeader) VALUES ('Begyndt', 'SkpDb', 'Dette er en beskrivelse', 'Kenneth: hej med jer', GETDATE(), GETDATE(), 'kenn229k');

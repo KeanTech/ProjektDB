@@ -48,9 +48,9 @@ namespace Skp_ProjektDB.Backend.Managers
             _sqlCommands.CreateUser(_dbConnection.GetConnection(), name, competence, hash, salt, username, roles);
         }
 
-        public void DeleteUser(string username)
+        public void DeleteUser(string username, string name, List<Roles> roles)
         {
-            _sqlCommands.DeleteUser(_dbConnection.GetConnection(), username);
+            _sqlCommands.DeleteUser(_dbConnection.GetConnection(), username, name, roles);
         }
 
         public User GetUser(string username)

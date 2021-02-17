@@ -57,30 +57,32 @@ namespace Skp_ProjektDB.Backend.Db
 
         public void CreateUser(SqlConnection connection, string name, string competence, string hash, string salt, string username, List<Roles> roles)
         {
-            SqlCommand command = new SqlCommand("", connection); // call stored procedure
-            command.Parameters.AddWithValue("", name);
-            command.Parameters.AddWithValue("", competence);
-            command.Parameters.AddWithValue("", hash);
-            command.Parameters.AddWithValue("", salt);
-            command.Parameters.AddWithValue("", username);
+            SqlCommand command = new SqlCommand("CreateUser", connection); // call stored procedure
+            command.Parameters.AddWithValue("@Name", name);
+            command.Parameters.AddWithValue("@Competence", competence);
+            command.Parameters.AddWithValue("Hash", hash);
+            command.Parameters.AddWithValue("Salt", salt);
+            command.Parameters.AddWithValue("Login", username);
 
             command.ExecuteNonQuery();
 
             // handle roles for the user
             foreach (Roles role in roles)
             {
-                command = new SqlCommand("", connection); // call procedure for add role
-                command.Parameters.AddWithValue("", role);
-                command.Parameters.AddWithValue("", username);
+                command = new SqlCommand("AddRoleToUser", connection); // call procedure for add role
+                command.Parameters.AddWithValue("Role", role);
+                command.Parameters.AddWithValue("UserName", username);
                 command.ExecuteNonQuery();
             }
         }
 
-        public void DeleteUser(SqlConnection connection, string username)
+        public void DeleteUser(SqlConnection connection, string username, string name, List<Roles> roles)
         {
-            SqlCommand command = new SqlCommand("", connection); // call stored procedure
-            command.Parameters.AddWithValue("", username);
+            SqlCommand command = new SqlCommand("DeleteUser", connection); // call stored procedure
+            command.Parameters.AddWithValue("UserName", username);
+            command.Parameters.AddWithValue("Name", name);
             command.ExecuteNonQuery();
+
         }
 
         public void UpdateUser(SqlConnection connection, string name, string competence, string hash, string salt, string username, List<Roles> roles)
