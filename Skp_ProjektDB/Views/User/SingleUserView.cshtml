@@ -34,11 +34,14 @@
                     <li class="list-group-item list-group-item-info">
                         <div class="list-group">
                             <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.Roles)</label>
-
-                            @for (int j = 0; j < Model.Roles.Count; j++)
+                            @if (Model.Roles != null)
                             {
-                                <p style="margin-left:30px;">@Model.Roles[j]</p>
+                                @for (int j = 0; j < Model.Roles.Count; j++)
+                                {
+                                    <p style="margin-left:30px;">@Model.Roles[j]</p>
+                                }
                             }
+
 
                         </div>
 
@@ -61,7 +64,7 @@
                         </tr>
                     </thead>
 
-                    @if (Model.Projects.Count != 0)
+                    @if (Model.Projects != null)
                     {
                         @for (int j = 0; j < Model.Projects.Count; j++)
                         {

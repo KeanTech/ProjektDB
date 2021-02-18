@@ -3,6 +3,7 @@ using Skp_ProjektDB.Types;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 
 namespace Skp_ProjektDB.Backend.Db
 {
@@ -11,22 +12,15 @@ namespace Skp_ProjektDB.Backend.Db
         public void CreateUser(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("CreateUser", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Name", user.Name);
             command.Parameters.AddWithValue("Competence", user.Competence);
-            command.Parameters.AddWithValue("Hash", user.Hash);
-            command.Parameters.AddWithValue("Salt", user.Salt);
+            command.Parameters.AddWithValue("Hash", Encoding.UTF8.GetBytes(user.Hash));
+            command.Parameters.AddWithValue("Salt", Encoding.UTF8.GetBytes(user.Salt));
             command.Parameters.AddWithValue("Login", user.Login);
-
+            connection.Open();
             command.ExecuteNonQuery();
-
-            // handle roles for the user
-            foreach (Roles role in user.Roles)
-            {
-                command = new SqlCommand("AddRoleToUser", connection);
-                command.Parameters.AddWithValue("UserName", user.Login);
-                command.Parameters.AddWithValue("Role", role);
-                command.ExecuteNonQuery();
-            }
+            connection.Close();
         }
 
         public DataSet GetAllUsers(SqlConnection connection)
@@ -42,6 +36,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewUserByUsername", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Login", username);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -51,9 +46,11 @@ namespace Skp_ProjektDB.Backend.Db
         public void DeleteUser(SqlConnection connection, string username)
         {
             SqlCommand command = new SqlCommand("DeleteUser", connection);
-            command.Parameters.AddWithValue("UserName", username);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@Username", username);
+            connection.Open();
             command.ExecuteNonQuery();
-
+            connection.Close();
         }
 
 

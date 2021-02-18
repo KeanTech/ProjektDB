@@ -14,9 +14,9 @@ namespace Skp_ProjektDB.Backend.Managers
 
         #region --------------------------------------------------------------------------------------------------- vv Project CRUD Methods vv 
 
-        public Project GetProject(string projectname)
+        public Project GetProject(int projectId)
         {
-            DataSet data = _sqlCommands.GetProject(_dbConnection.GetConnection(), projectname);
+            DataSet data = _sqlCommands.GetProject(_dbConnection.GetConnection(), projectId);
             DataRow dataRow = data.Tables[0].Rows[0];
             // set data
 
@@ -56,14 +56,14 @@ namespace Skp_ProjektDB.Backend.Managers
 
         public void DeleteUser(User user)
         {
-            _sqlCommands.DeleteUser(_dbConnection.GetConnection(), user);
+            _sqlCommands.DeleteUser(_dbConnection.GetConnection(), user.Login);
         }
 
         public User GetUser(string username)
         {
             DataSet data = _sqlCommands.GetUser(username, _dbConnection.GetConnection());
             DataRow userRow = data.Tables[0].Rows[0];
-            User user = new User("", "", new System.Collections.Generic.List<Types.Roles>());
+            User user = new User() { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() };
             // fille userRow data into user. (need to know the data placement)
             return user;
         }
@@ -76,8 +76,9 @@ namespace Skp_ProjektDB.Backend.Managers
             DataRowCollection userRows = data.Tables[0].Rows;
             foreach (DataRow userRow in userRows)
             {
-                User user = new User("", "", new List<Types.Roles>());
                 // fill user with correct data (need to know data placement)
+                User user = new User(  ) { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() + "@zbc.dk" };
+                users.Add(user);
             }
 
             return users;

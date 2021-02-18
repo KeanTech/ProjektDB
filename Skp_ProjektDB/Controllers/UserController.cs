@@ -70,7 +70,7 @@ namespace Skp_ProjektDB.Controllers
 
         public IActionResult SingleUserView(string userName)
         {
-            return View(db.GetUser(userName));
+            return View(db.GetUser(userName.Split('@')[0]));
         }
 
         [HttpPost]
@@ -107,8 +107,21 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult UpdateUser(User user)
         {
-            //db.UpdateUser(user);
-            return View(new User() { Competence = "H2", Name = "Kenneth a", Login = "kenn229" });
+            var users = db.GetAllUsers();
+
+            foreach (var userInList in users)
+            {
+                if (userInList == user)
+                {
+                    return View(user);
+                }
+                else
+                {
+                    return View(db.GetUser(user.Login));
+                }
+            }
+
+            return View();
         }
 
 
@@ -128,18 +141,30 @@ namespace Skp_ProjektDB.Controllers
             }
             else
             {
+                // GENERATE password for created users
+                user.Salt = security.GenerateSalt();
+                user.Hash = security.Hash(Encoding.UTF8.GetBytes(user.Salt));
+                
+                db.CreateUser(user);
                 return Redirect("/User/UserOverView");
             }
         }
 
+        [HttpGet]
         /// <summary>
         /// This is used to delete users from Db
         /// </summary>
         /// <returns></returns>
         public IActionResult DeleteUser(User user)
         {
-            //db.DeleteUser(user);
-            return View(new User() { Competence = "H2", Name = "Kenneth a", Login = "kenn229" });
+            return View(user = new Models.User() { Name = "Kenneth", Login = "kenn229k", Competence = "H2" });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteUser(string username)
+        {
+            db.DeleteUser(db.GetUser(username));
+            return Redirect("/User/UserOverView");
         }
     }
 }
