@@ -1,4 +1,5 @@
-﻿using Skp_ProjektDB.Types;
+﻿using Skp_ProjektDB.Models;
+using Skp_ProjektDB.Types;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,10 +8,39 @@ namespace Skp_ProjektDB.Backend.Db
 {
     internal class SqlCommunication
     {
-        public DataSet GetData(string sqlCommand, SqlConnection connection)
+        public DataSet GetTeam(SqlConnection connection, int projectId)
         {
             DataSet data = new DataSet();
-            SqlCommand command = new SqlCommand(sqlCommand, connection);
+            SqlCommand command = new SqlCommand("", connection);
+            command.Parameters.AddWithValue("", projectId);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
+        public DataSet GetProject(SqlConnection connection, string projectName)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("", connection);
+            command.Parameters.AddWithValue("", projectName);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
+        public DataSet GetActiveProjects(SqlConnection connection)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("", connection);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
+        public DataSet GetAllProjects(SqlConnection connection)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("", connection);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
             return data;
@@ -55,48 +85,48 @@ namespace Skp_ProjektDB.Backend.Db
             return data;
         }
 
-        public void CreateUser(SqlConnection connection, string name, string competence, string hash, string salt, string username, List<Roles> roles)
+        public void CreateUser(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("CreateUser", connection); // call stored procedure
-            command.Parameters.AddWithValue("@Name", name);
-            command.Parameters.AddWithValue("@Competence", competence);
-            command.Parameters.AddWithValue("Hash", hash);
-            command.Parameters.AddWithValue("Salt", salt);
-            command.Parameters.AddWithValue("Login", username);
+            command.Parameters.AddWithValue("@Name", user.Name);
+            command.Parameters.AddWithValue("@Competence", user.Competence);
+            command.Parameters.AddWithValue("Hash", user.Hash);
+            command.Parameters.AddWithValue("Salt", user.Salt);
+            command.Parameters.AddWithValue("Login", user.Login);
 
             command.ExecuteNonQuery();
 
             // handle roles for the user
-            foreach (Roles role in roles)
+            foreach (Roles role in user.Roles)
             {
                 command = new SqlCommand("AddRoleToUser", connection); // call procedure for add role
                 command.Parameters.AddWithValue("Role", role);
-                command.Parameters.AddWithValue("UserName", username);
+                command.Parameters.AddWithValue("UserName", user.Login);
                 command.ExecuteNonQuery();
             }
         }
 
-        public void DeleteUser(SqlConnection connection, string username, string name, List<Roles> roles)
+        public void DeleteUser(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("DeleteUser", connection); // call stored procedure
-            command.Parameters.AddWithValue("UserName", username);
-            command.Parameters.AddWithValue("Name", name);
+            command.Parameters.AddWithValue("UserName", user.Login);
+            command.Parameters.AddWithValue("Name", user.Name);
             command.ExecuteNonQuery();
 
         }
 
-        public void UpdateUser(SqlConnection connection, string name, string competence, string hash, string salt, string username, List<Roles> roles)
+        public void UpdateUser(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("", connection); // call stored procedure
-            command.Parameters.AddWithValue("", name);
-            command.Parameters.AddWithValue("", competence);
-            command.Parameters.AddWithValue("", hash);
-            command.Parameters.AddWithValue("", salt);
-            command.Parameters.AddWithValue("", username);
+            command.Parameters.AddWithValue("", user.Name);
+            command.Parameters.AddWithValue("", user.Competence);
+            command.Parameters.AddWithValue("", user.Hash);
+            command.Parameters.AddWithValue("", user.Salt);
+            command.Parameters.AddWithValue("", user.Login);
 
             command.ExecuteNonQuery();
 
-            foreach (Roles role in roles)
+            foreach (Roles role in user.Roles)
             {
                 command = new SqlCommand("", connection); // call stored procedure
                 command.Parameters.AddWithValue("", role);

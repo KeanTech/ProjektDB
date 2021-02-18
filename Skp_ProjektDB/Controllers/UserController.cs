@@ -96,7 +96,7 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult CreateUser(User user)
         {
-            if(user.Name == null)
+            if (user.Name == null)
             {
                 return View();
             }
@@ -119,9 +119,9 @@ namespace Skp_ProjektDB.Controllers
         /// This is used to update user data
         /// </summary>
         /// <returns></returns>
-        public IActionResult UpdateUser(string name, string competence, string hash, string salt, string username, List<Roles> roles)
+        public IActionResult UpdateUser(User user)
         {
-            db.UpdateUser(name, competence, hash, salt, username, roles);
+            db.UpdateUser(user);
             return View();
         }
 
@@ -129,9 +129,9 @@ namespace Skp_ProjektDB.Controllers
         /// This is used to delete users from Db
         /// </summary>
         /// <returns></returns>
-        public IActionResult DeleteUser(string username)
+        public IActionResult DeleteUser(User user)
         {
-            db.DeleteUser(username);
+            db.DeleteUser(user);
             return View();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Skp_ProjektDB.Backend.Managers;
 using Skp_ProjektDB.DataClasses;
 using Skp_ProjektDB.Models;
 using System;
@@ -13,10 +14,12 @@ namespace Skp_ProjektDB.Controllers
     public class ProjectController : Controller
     {
         private readonly IConfiguration configuration;
+        private Db db;
 
         public ProjectController(IConfiguration configuration)
         {
             this.configuration = configuration;
+            db = new Db();
         }
 
         /// <summary>
@@ -27,7 +30,7 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult SingleProjectView(string projectName)
         {
             var project = GetProjects().Where(x => x.Title == projectName).FirstOrDefault();
-            project.Team = UserController.GetAllUsers();
+            project.Team = db.GetAllUsers();
             return View(new ProjectModel(project.Title, project.Description, project.Log, project.StartDate, project.EndDate, project.Projectleder, project.Team));
         }
 
@@ -37,7 +40,7 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult ProjectOverView()
         {
-            var users = UserController.GetAllUsers();
+            var users = db.GetAllUsers();
             var projects = GetProjects();
             projects.OrderBy(x => x.Title.ToLower() == "a");
 
@@ -74,22 +77,22 @@ namespace Skp_ProjektDB.Controllers
         }
 
         //----------------------------------------------------Search methods
-  
+
         public IActionResult ProjectSearch(string projectName, bool nameCheck, bool projectleaderCheck, bool descriptionCheck, bool logCheck)
         {
             if (projectName != null)
             {
-                List<ProjectModel> searchedProject = GetProjects().FindAll( x => x.Title.ToLower().Contains(projectName.ToLower() ));
-                SortOutSearchCriteria(searchedProject, nameCheck, projectleaderCheck, descriptionCheck, logCheck); 
+                List<ProjectModel> searchedProject = GetProjects().FindAll(x => x.Title.ToLower().Contains(projectName.ToLower()));
+                SortOutSearchCriteria(searchedProject, nameCheck, projectleaderCheck, descriptionCheck, logCheck);
 
                 if (searchedProject != null)
                     return View("ProjectOverView", searchedProject);
                 else
-                    return View("ProjectOverView", SortOutSearchCriteria( GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck ));
+                    return View("ProjectOverView", SortOutSearchCriteria(GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
             }
             else
             {
-                return View("ProjectOverView", SortOutSearchCriteria( GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck ));
+                return View("ProjectOverView", SortOutSearchCriteria(GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
             }
         }
 

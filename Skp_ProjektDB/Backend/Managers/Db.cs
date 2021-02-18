@@ -12,14 +12,20 @@ namespace Skp_ProjektDB.Backend.Managers
         private Connection _dbConnection = new Connection();
         private SqlCommunication _sqlCommands = new SqlCommunication();
 
-        // add sql commands here => stored procedures prefered
-        public DataSet GetData(string sqlCommand)
-        {
-            return _sqlCommands.GetData(sqlCommand, _dbConnection.GetConnection());
-        }
-
-
         #region --------------------------------------------------------------------------------------------------- vv Project CRUD Methods vv 
+
+        public Project GetProject(string projectname)
+        {
+            DataSet data = _sqlCommands.GetProject(_dbConnection.GetConnection(), projectname);
+            DataRow dataRow = data.Tables[0].Rows[0];
+            // set data
+
+            // get team
+            int projectid = int.Parse(dataRow[0].ToString());
+            DataSet tream = _sqlCommands.GetTeam(_dbConnection.GetConnection(), 0);
+
+            return new Project("", "", new List<string>(), DateTime.Now, DateTime.Now, new User(), new List<User>());
+        }
 
         #endregion --------------------------------------------------------------------------------------------------- ^^ Project CRUD Methods ^^
 
@@ -43,14 +49,14 @@ namespace Skp_ProjektDB.Backend.Managers
             return hash;
         }
 
-        public void CreateUser(string name, string competence, string hash, string salt, string username, List<Roles> roles)
+        public void CreateUser(User user)
         {
-            _sqlCommands.CreateUser(_dbConnection.GetConnection(), name, competence, hash, salt, username, roles);
+            _sqlCommands.CreateUser(_dbConnection.GetConnection(), user);
         }
 
-        public void DeleteUser(string username, string name, List<Roles> roles)
+        public void DeleteUser(User user)
         {
-            _sqlCommands.DeleteUser(_dbConnection.GetConnection(), username, name, roles);
+            _sqlCommands.DeleteUser(_dbConnection.GetConnection(), user);
         }
 
         public User GetUser(string username)
@@ -77,9 +83,9 @@ namespace Skp_ProjektDB.Backend.Managers
             return users;
         }
 
-        public void UpdateUser(string name, string competence, string hash, string salt, string username, List<Roles> roles)
+        public void UpdateUser(User user)
         {
-            _sqlCommands.UpdateUser(_dbConnection.GetConnection(), name, competence, hash, salt, username, roles);
+            _sqlCommands.UpdateUser(_dbConnection.GetConnection(), user);
         }
         #endregion --------------------------------------------------------------------------------------------------- ^^ User CRUD Methods ^^ 
 
