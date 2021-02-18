@@ -88,7 +88,33 @@ namespace Skp_ProjektDB.Controllers
             return View("UserOverView", users);
         }
 
-        //------------------------------------------------------------CRUD methods
+        //------------------------------------------------------------ vv CRUD Views vv
+
+ 
+
+        /// <summary>
+        /// This is used to get user from Db
+        /// </summary>
+        /// <returns></returns>
+        public User ReadUser(string username)
+        {
+            return db.GetUser(username);
+        }
+
+        /// <summary>
+        /// This is used to update user data
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult UpdateUser(User user)
+        {
+            //db.UpdateUser(user);
+            return View(new User() { Competence = "H2", Name = "Kenneth a", Login = "kenn229" });
+        }
+
+
+
+
+        //-------------------------------------------------------------- vv Admin only views vv
 
         /// <summary>
         /// This is used to save newly created users
@@ -107,32 +133,13 @@ namespace Skp_ProjektDB.Controllers
         }
 
         /// <summary>
-        /// This is used to get user from Db
-        /// </summary>
-        /// <returns></returns>
-        public User ReadUser(string username)
-        {
-            return db.GetUser(username);
-        }
-
-        /// <summary>
-        /// This is used to update user data
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult UpdateUser(User user)
-        {
-            db.UpdateUser(user);
-            return View();
-        }
-
-        /// <summary>
         /// This is used to delete users from Db
         /// </summary>
         /// <returns></returns>
         public IActionResult DeleteUser(User user)
         {
-            db.DeleteUser(user);
-            return View();
+            //db.DeleteUser(user);
+            return View(new User() { Competence = "H2", Name = "Kenneth a", Login = "kenn229" });
         }
     }
 }

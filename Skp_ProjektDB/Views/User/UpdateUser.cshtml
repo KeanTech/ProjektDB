@@ -1,45 +1,43 @@
 ﻿@model Skp_ProjektDB.Models.User
 
 @{
-    ViewData["Title"] = "CreateUser";
+    ViewData["Title"] = "UpdateUser";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
 <div class="list-group-item bg-dark border-0">
     <div class="row justify-content-center">
 
         <div class="col-md-4 list-group-item-info ">
-            <h1>CreateUser</h1>
+            <h1>Rediger Bruger</h1>
             <hr />
             <form asp-action="CreateUser">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Name" class="control-label font-weight-bolder"></label>
-                    <input asp-for="Name" class="form-control" required/>
+                    <input asp-for="Name" value="@Model.Name" class="form-control" required />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Competence" class="control-label font-weight-bolder"></label>
-                    <input asp-for="Competence" class="form-control" required/>
+                    <input asp-for="Competence" value="@Model.Competence" class="form-control" required />
                     <span asp-validation-for="Competence" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Login" class="control-label font-weight-bolder"></label>
-                    <input asp-for="Login" class="form-control" required/>
+                    <input asp-for="Login" value="@Model.Login" class="form-control" required />
                     <span asp-validation-for="Login" class="text-danger"></span>
                 </div>
+
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <input type="submit" value="Gem" class="btn btn-success" /> |
+                    <a asp-action="UserOverView">Fortryd</a>
                 </div>
             </form>
         </div>
 
     </div>
-</div>
-
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
