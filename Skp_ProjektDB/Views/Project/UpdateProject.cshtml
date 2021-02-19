@@ -1,7 +1,7 @@
 ﻿@model Skp_ProjektDB.Models.Project
 
 @{
-    ViewData["Title"] = "CreateProject";
+    ViewData["Title"] = "UpdateProject";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -9,7 +9,7 @@
     <div class="row justify-content-center">
 
         <div class="col-md-4 list-group-item-info ">
-            <h1>Opret Projekt</h1>
+            <h1>Opdater Projekt</h1>
             <hr />
             <form asp-action="CreateProject">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -46,7 +46,7 @@
 
 
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" /> |
+                    <input type="submit" value="Opdater" class="btn btn-success" /> |
                     <a asp-action="UserOverView">Fortryd</a>
                 </div>
             </form>

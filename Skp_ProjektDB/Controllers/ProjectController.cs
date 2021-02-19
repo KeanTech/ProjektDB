@@ -22,6 +22,19 @@ namespace Skp_ProjektDB.Controllers
             db = new Db();
         }
 
+        private List<ProjectModel> GetProjects()
+        {
+            //Make Db connetion for all projects
+            return new List<ProjectModel>();
+        }
+
+        private List<User> GetUsers()
+        {
+            //Make Db connection for all users
+            return new List<User>();
+        }
+
+
         /// <summary>
         /// This is a single view of a prjects, that a user selects from another view.
         /// </summary>
@@ -110,39 +123,39 @@ namespace Skp_ProjektDB.Controllers
 
 
         //-----------------------------------------------------CRUD Methods
-        [HttpGet]
-        public IActionResult CreateProject()
+        
+        
+        public void CreateProject(Project project)
+        {
+            if (project.Title != null)
+            {
+                SqlConnection connection = new SqlConnection(configuration.GetConnectionString("SkpDb"));
+                SqlCommand sqlCommand = new SqlCommand("INSERT INTO Projects(Status, Title, Description, Log, StartDate, EndDate, ProjectLeader) VALUES (@Status, @Title, @Description, @Log, @StartDate, @EndDate, @ProjectLeader);", connection);
+
+                sqlCommand.Parameters.Add(new SqlParameter("@Status", project.Status));
+                sqlCommand.Parameters.Add(new SqlParameter("@Title", project.Title));
+                sqlCommand.Parameters.Add(new SqlParameter("@Description", project.Description));
+                sqlCommand.Parameters.Add(new SqlParameter("@StartDate", project.StartDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
+                sqlCommand.Parameters.Add(new SqlParameter("@EndDate", project.EndDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
+                sqlCommand.Parameters.Add(new SqlParameter("ProjectLeader", project.Projectleder));
+                connection.Open();
+                sqlCommand.ExecuteNonQuery();
+                connection.Close();
+
+
+                Redirect("/HomePage");
+            }
+        }
+
+        public IActionResult UpdateProject()
         {
             return View();
         }
 
-        [HttpPost]
-        public void CreateProject(Project project)
+        public IActionResult DeleteProject()
         {
-            SqlConnection connection = new SqlConnection(configuration.GetConnectionString("SkpDb"));
-            SqlCommand sqlCommand = new SqlCommand("INSERT INTO Projects(Status, Title, Description, Log, StartDate, EndDate, ProjectLeader) VALUES (@Status, @Title, @Description, @Log, @StartDate, @EndDate, @ProjectLeader);", connection);
-
-            sqlCommand.Parameters.Add(new SqlParameter("@Status", project.Status));
-            sqlCommand.Parameters.Add(new SqlParameter("@Title", project.Title));
-            sqlCommand.Parameters.Add(new SqlParameter("@Description", project.Description));
-            sqlCommand.Parameters.Add(new SqlParameter("@StartDate", project.StartDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            sqlCommand.Parameters.Add(new SqlParameter("@EndDate", project.EndDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            sqlCommand.Parameters.Add(new SqlParameter("ProjectLeader", project.Projectleder));
-            connection.Open();
-            sqlCommand.ExecuteNonQuery();
-            connection.Close();
-
-            Redirect("/HomePage");
+            return View();
         }
-
-        public Project GetProject()
-        {
-            return null;
-        }
-
-        public static List<ProjectModel> GetProjects() //Made static for testing
-        {
-            return null;
-        }
+     
     }
 }
