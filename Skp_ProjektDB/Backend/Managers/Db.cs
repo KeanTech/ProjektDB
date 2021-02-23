@@ -1,9 +1,12 @@
 ﻿using Skp_ProjektDB.Backend.Db;
+using Skp_ProjektDB.Backend.Security;
 using Skp_ProjektDB.Models;
 using Skp_ProjektDB.Types;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
+using System.Threading;
 
 namespace Skp_ProjektDB.Backend.Managers
 {
@@ -11,6 +14,8 @@ namespace Skp_ProjektDB.Backend.Managers
     {
         private Connection _dbConnection = new Connection();
         private SqlCommunication _sqlCommands = new SqlCommunication();
+        private Security security = new Security();
+        private Message message = new Message();
 
         #region --------------------------------------------------------------------------------------------------- vv Project CRUD Methods vv 
 
@@ -25,6 +30,17 @@ namespace Skp_ProjektDB.Backend.Managers
             DataSet tream = _sqlCommands.GetTeam(_dbConnection.GetConnection(), 0);
 
             return new Project("", "", new List<string>(), DateTime.Now, DateTime.Now, new User(), new List<User>());
+        }
+
+        public List<ProjectModel> GetAllProjects()
+        {
+            DataSet data = _sqlCommands.GetAllProjects(_dbConnection.GetConnection());
+            List<ProjectModel> projects = new List<ProjectModel>();
+            foreach (DataRow dataRow in data.Tables[0].Rows)
+            {
+
+            }
+            return projects;
         }
 
         #endregion --------------------------------------------------------------------------------------------------- ^^ Project CRUD Methods ^^
@@ -51,7 +67,22 @@ namespace Skp_ProjektDB.Backend.Managers
 
         public void CreateUser(User user)
         {
+            user.Salt = security.GenerateSalt();
+            Random random = new Random();
+            string pass = "";
+            for (int i = 0; i < 8; i++)
+            {
+                pass += random.Next(0, 10);
+            }
+            user.Hash = security.Hash(Encoding.UTF8.GetBytes(pass));
             _sqlCommands.CreateUser(_dbConnection.GetConnection(), user);
+
+            // send email
+            Thread t =
+                new Thread(() => message.SendMessage(Messages.Mediatype.Email, "Dit login er: " + user.Login + "\n Dit password er: " + pass + " HUSK at ændre det",
+                user.Login + @"@zbc.dk"));
+            t.Start();
+
         }
 
         public void DeleteUser(User user)
@@ -77,7 +108,7 @@ namespace Skp_ProjektDB.Backend.Managers
             foreach (DataRow userRow in userRows)
             {
                 // fill user with correct data (need to know data placement)
-                User user = new User(  ) { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() + "@zbc.dk" };
+                User user = new User() { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() + "@zbc.dk" };
                 users.Add(user);
             }
 

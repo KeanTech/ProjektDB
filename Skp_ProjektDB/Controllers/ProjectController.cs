@@ -14,26 +14,13 @@ namespace Skp_ProjektDB.Controllers
     public class ProjectController : Controller
     {
         private readonly IConfiguration configuration;
-        private Db db;
+        private Db db = new Db();
 
         public ProjectController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            db = new Db();
+            db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
-
-        private List<ProjectModel> GetProjects()
-        {
-            //Make Db connetion for all projects
-            return new List<ProjectModel>();
-        }
-
-        private List<User> GetUsers()
-        {
-            //Make Db connection for all users
-            return new List<User>();
-        }
-
 
         /// <summary>
         /// This is a single view of a prjects, that a user selects from another view.
@@ -54,7 +41,7 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult ProjectOverView()
         {
             var users = db.GetAllUsers();
-            var projects = GetProjects();
+            var projects = db.GetAllProjects();
             projects.OrderBy(x => x.Title.ToLower() == "a");
 
             List<ProjectModel> projectModels = new List<ProjectModel>();
@@ -123,39 +110,39 @@ namespace Skp_ProjektDB.Controllers
 
 
         //-----------------------------------------------------CRUD Methods
-        
-        
+        [HttpGet]
+        public IActionResult CreateProject()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public void CreateProject(Project project)
         {
-            if (project.Title != null)
-            {
-                SqlConnection connection = new SqlConnection(configuration.GetConnectionString("SkpDb"));
-                SqlCommand sqlCommand = new SqlCommand("INSERT INTO Projects(Status, Title, Description, Log, StartDate, EndDate, ProjectLeader) VALUES (@Status, @Title, @Description, @Log, @StartDate, @EndDate, @ProjectLeader);", connection);
+            SqlConnection connection = new SqlConnection(configuration.GetConnectionString("SkpDb"));
+            SqlCommand sqlCommand = new SqlCommand("INSERT INTO Projects(Status, Title, Description, Log, StartDate, EndDate, ProjectLeader) VALUES (@Status, @Title, @Description, @Log, @StartDate, @EndDate, @ProjectLeader);", connection);
 
-                sqlCommand.Parameters.Add(new SqlParameter("@Status", project.Status));
-                sqlCommand.Parameters.Add(new SqlParameter("@Title", project.Title));
-                sqlCommand.Parameters.Add(new SqlParameter("@Description", project.Description));
-                sqlCommand.Parameters.Add(new SqlParameter("@StartDate", project.StartDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
-                sqlCommand.Parameters.Add(new SqlParameter("@EndDate", project.EndDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
-                sqlCommand.Parameters.Add(new SqlParameter("ProjectLeader", project.Projectleder));
-                connection.Open();
-                sqlCommand.ExecuteNonQuery();
-                connection.Close();
+            sqlCommand.Parameters.Add(new SqlParameter("@Status", project.Status));
+            sqlCommand.Parameters.Add(new SqlParameter("@Title", project.Title));
+            sqlCommand.Parameters.Add(new SqlParameter("@Description", project.Description));
+            sqlCommand.Parameters.Add(new SqlParameter("@StartDate", project.StartDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
+            sqlCommand.Parameters.Add(new SqlParameter("@EndDate", project.EndDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
+            sqlCommand.Parameters.Add(new SqlParameter("ProjectLeader", project.Projectleder));
+            connection.Open();
+            sqlCommand.ExecuteNonQuery();
+            connection.Close();
 
-
-                Redirect("/HomePage");
-            }
+            Redirect("/HomePage");
         }
 
-        public IActionResult UpdateProject()
+        public Project GetProject()
         {
-            return View();
+            return null;
         }
 
-        public IActionResult DeleteProject()
+        public static List<ProjectModel> GetProjects() //Made static for testing
         {
-            return View();
+            return null;
         }
-     
     }
 }
