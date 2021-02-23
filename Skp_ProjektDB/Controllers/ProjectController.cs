@@ -14,12 +14,12 @@ namespace Skp_ProjektDB.Controllers
     public class ProjectController : Controller
     {
         private readonly IConfiguration configuration;
-        private Db db;
+        private Db db = new Db();
 
         public ProjectController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            db = new Db();
+            db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult ProjectOverView()
         {
             var users = db.GetAllUsers();
-            var projects = GetProjects();
+            var projects = db.GetAllProjects();
             projects.OrderBy(x => x.Title.ToLower() == "a");
 
             List<ProjectModel> projectModels = new List<ProjectModel>();
