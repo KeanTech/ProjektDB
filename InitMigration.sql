@@ -1,13 +1,4 @@
-Use master
-Go
-
-Drop Database ProjectDatabase
-Go
-
-Create database ProjectDatabase
-Go
-
-Use ProjectDatabase
+Use SkpOpgWeb
 Go
 
 ------------------Create Tables
@@ -15,8 +6,8 @@ Create TABLE Users(
 Name varchar(50) NOT NULL,
 Competence varchar(250),
 Login varchar(20) primary key,
-Salt varbinary(20) NOT NULL,
-Hash varbinary(20) NOT NULL
+Salt VARCHAR(MAX) NOT NULL,
+Hash VARCHAR(MAX) NOT NULL
 )
 Go
 
