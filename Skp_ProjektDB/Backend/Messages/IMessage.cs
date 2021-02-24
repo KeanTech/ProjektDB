@@ -2,6 +2,5 @@
 {
     internal interface IMessage
     {
-        void SendMessage();
     }
 }

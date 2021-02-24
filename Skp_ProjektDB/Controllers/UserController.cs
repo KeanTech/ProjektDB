@@ -90,7 +90,7 @@ namespace Skp_ProjektDB.Controllers
 
         //------------------------------------------------------------ vv CRUD Views vv
 
- 
+
 
         /// <summary>
         /// This is used to get user from Db
@@ -141,10 +141,19 @@ namespace Skp_ProjektDB.Controllers
             }
             else
             {
-                // GENERATE password for created users
+                // create salt for user
                 user.Salt = security.GenerateSalt();
-                user.Hash = security.Hash(Encoding.UTF8.GetBytes(user.Salt));
-                
+
+                // create random password for user
+                Random random = new Random();
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < 10; i++)
+                {
+                    sb.Append(random.Next(0, 10));
+                }
+                user.Hash = security.Hash(Convert.FromBase64String(security.Encrypt(Encoding.UTF8.GetBytes(sb.ToString()), Convert.FromBase64String(user.Salt))));
+
+                // create user on database
                 db.CreateUser(user);
                 return Redirect("/User/UserOverView");
             }

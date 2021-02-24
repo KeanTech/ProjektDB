@@ -1,5 +1,6 @@
 ﻿using Skp_ProjektDB.Models;
 using Skp_ProjektDB.Types;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -15,8 +16,8 @@ namespace Skp_ProjektDB.Backend.Db
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Name", user.Name);
             command.Parameters.AddWithValue("Competence", user.Competence);
-            command.Parameters.AddWithValue("Hash", Encoding.UTF8.GetBytes(user.Hash));
-            command.Parameters.AddWithValue("Salt", Encoding.UTF8.GetBytes(user.Salt));
+            command.Parameters.AddWithValue("Hash", user.Hash);
+            command.Parameters.AddWithValue("Salt", user.Salt);
             command.Parameters.AddWithValue("Login", user.Login);
             connection.Open();
             command.ExecuteNonQuery();

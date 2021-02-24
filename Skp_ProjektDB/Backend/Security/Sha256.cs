@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Skp_ProjektDB.Backend.Security
@@ -8,7 +9,7 @@ namespace Skp_ProjektDB.Backend.Security
         public string Sha2Hash(byte[] data)
         {
             SHA256 sha = SHA256.Create();
-            return Encoding.UTF8.GetString(sha.ComputeHash(data));
+            return Convert.ToBase64String(sha.ComputeHash(data));
         }
     }
 }
