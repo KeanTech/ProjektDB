@@ -52,8 +52,8 @@ CREATE PROC CreateUser
 @Name varchar(50),
 @Competence varchar(250),
 @Login varchar(20),
-@Salt varbinary(20), 
-@Hash varbinary(20)
+@Salt varchar(max), 
+@Hash varchar(max)
 AS
 	Insert into Users 
 	VALUES(@Name, @Competence, @Login, @Salt, @Hash)
@@ -84,8 +84,8 @@ Go
 --Update User
 CREATE PROC UpdateUser
 @Username varchar(20),
-@Hash varbinary(20),
-@Salt varbinary(20),
+@Hash varchar(max),
+@Salt varchar(max),
 @Name varchar(50),
 @Competence varchar(20)
 AS
