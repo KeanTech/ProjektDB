@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "UserOverView";
+    if (Model[0].Admin == true)
+        Layout = "~Views/Shared/_AdminLayout.cshtml";
+    else
+        Layout = "~Views/Shared/_Layout.cshtml";
 }
 
 <!-- This is used for search it takes in a string through input and sends it to UserController via a post method -->

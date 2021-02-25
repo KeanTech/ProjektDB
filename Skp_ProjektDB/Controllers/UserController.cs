@@ -42,18 +42,23 @@ namespace Skp_ProjektDB.Controllers
                     {
                         // gets the user who logged in
                         User user = db.GetUser(loginName);
+                        if (user.Roles.Contains(Roles.Instruktør))
+                            return Redirect("/Project/AdminUserSingleView");
+                        else
+                            return Redirect("/Project/");
                     }
                     else
                     {
                         // password is wrong
+                        return BadRequest("Forkert Kode");
                     }
                 }
                 else
                 {
                     // username is incorrect!
+                    return BadRequest("Login navn findes ikke");
                 }
 
-                return Redirect("/Project/ProjectOverView");
             }
         }
 
@@ -163,7 +168,8 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult DeleteUser(User user)
         {
-            return View(user = new Models.User() { Name = "Kenneth", Login = "kenn229k", Competence = "H2" });
+
+            return View(user);
         }
 
         [HttpPost]

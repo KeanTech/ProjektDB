@@ -1,16 +1,17 @@
 ﻿using Skp_ProjektDB.Types;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Skp_ProjektDB.Models
 {
     public class User
     {
-        public User()
+        public User(string name, string login, List<Roles> roles)
         {
+            Name = name;
+            Login = login;
+            Roles = roles;
+            Projects = new List<Project>();
         }
 
         [DisplayName("Navn")]
@@ -29,13 +30,11 @@ namespace Skp_ProjektDB.Models
         //This is for view only dont add this to db (User is part of Project)
         [DisplayName("Projekter")]
         public List<Project> Projects { get; set; }
+        public bool Admin { get; set; }
 
-        public User(string name, string login, List<Roles> roles)
+        public User()
         {
-            Name = name;
-            Login = login;
-            Roles = roles;
-            Projects = new List<Project>();
         }
+
     }
 }
