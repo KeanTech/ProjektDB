@@ -31,7 +31,8 @@ namespace Skp_ProjektDB.Models
         [DisplayName("Projekter")]
         public List<Project> Projects { get; set; }
         public bool Admin { get; set; }
-
+        public bool ProjectLeader { get; set; }
+        public bool Owner { get; set; }
         public User()
         {
         }

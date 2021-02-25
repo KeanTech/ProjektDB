@@ -103,6 +103,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
             DataSet data = _sqlCommands.GetAllUsers(_dbConnection.GetConnection());
             DataRowCollection userRows = data.Tables[0].Rows;
+            
             foreach (DataRow userRow in userRows)
             {
                 // fill user with correct data (need to know data placement)
@@ -116,6 +117,24 @@ namespace Skp_ProjektDB.Backend.Managers
         public void UpdateUser(User user)
         {
             _sqlCommands.UpdateUser(_dbConnection.GetConnection(), user);
+        }
+
+        public User GetUserRoles(User user)
+        {
+            DataSet data = _sqlCommands.ViewUsersRoles(_dbConnection.GetConnection(), user.Login);
+            DataRowCollection userRows = data.Tables[0].Rows;
+            foreach (DataRow userRow in userRows)
+            {   
+                foreach (var item in Enum.GetValues<Roles>())
+                {
+                    if(item.ToString() == userRow.ItemArray[0].ToString())
+                    {
+                        user.Roles.Add(item);
+                    }
+                }
+            }
+
+            return null;
         }
         #endregion --------------------------------------------------------------------------------------------------- ^^ User CRUD Methods ^^ 
 

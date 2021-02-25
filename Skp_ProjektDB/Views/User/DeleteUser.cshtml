@@ -1,20 +1,27 @@
 ﻿@model Skp_ProjektDB.Models.User
 
+
+
 @{
     ViewData["Title"] = "DeleteUser";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    if (Model.Admin == true)
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    else
+        Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@if (Model.Admin == true)
+{
 
-<div class="list-group-item bg-dark border-0">
-    <div class="row justify-content-center">
+    <div class="list-group-item bg-dark border-0">
+        <div class="row justify-content-center">
 
-        <div class="col-md-4 list-group-item-info ">
-            <h1>Slet Bruger</h1>
-            <hr />
+            <div class="col-md-4 list-group-item-info ">
+                <h1>Slet Bruger</h1>
+                <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Name" class="control-label font-weight-bolder"></label>
-                    <input asp-for="Name" value="@Model.Name" class="form-control" disabled/>
+                    <input asp-for="Name" value="@Model.Name" class="form-control" disabled />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -29,14 +36,20 @@
                     <span asp-validation-for="Login" class="text-danger"></span>
                 </div>
                 <h6>Er du sikker på du vil fjerne denne bruger ?</h6>
-            <form asp-action="DeleteUser">
-                <div class="form-group">
-                    <input type="submit" value="Fjern" class="btn btn-danger" /> |
-                    <a asp-action="UserOverView">Fortryd</a>
-                </div>
-                <input name="username" type="text" value="@Model.Login"   hidden />
-            </form>
-        </div>
+                <form asp-action="DeleteUser">
+                    <div class="form-group">
+                        <input type="submit" value="Fjern" class="btn btn-danger" /> |
+                        <a asp-action="UserOverView">Fortryd</a>
+                    </div>
+                    <input name="username" type="text" value="@Model.Login" hidden />
+                </form>
+            </div>
 
+        </div>
     </div>
-</div>
+
+}
+else
+{
+    <h4>Du har ikke rettigheder til denne side</h4>
+}

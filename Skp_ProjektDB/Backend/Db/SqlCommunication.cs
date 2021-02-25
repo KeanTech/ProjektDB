@@ -10,6 +10,16 @@ namespace Skp_ProjektDB.Backend.Db
 {
     internal class SqlCommunication
     {
+        public string CheckUserName(string userName)
+        {
+            if (userName.Split('@')[1] == null)
+                return userName;
+            else
+                return userName.Split('@')[0];
+        }
+
+
+
         public void CreateUser(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("CreateUser", connection);
@@ -38,7 +48,7 @@ namespace Skp_ProjektDB.Backend.Db
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewUserByUsername", connection);
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("Login", username);
+            command.Parameters.AddWithValue("Login", CheckUserName(username));
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
             return data;
@@ -48,12 +58,11 @@ namespace Skp_ProjektDB.Backend.Db
         {
             SqlCommand command = new SqlCommand("DeleteUser", connection);
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@Username", CheckUserName(username));
             connection.Open();
             command.ExecuteNonQuery();
             connection.Close();
         }
-
 
         public void UpdateUser(SqlConnection connection, User user)
         {
@@ -80,6 +89,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("GetSalt", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -90,6 +100,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("GetHash", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -100,6 +111,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("SearchForUser", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Search", search);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -123,6 +135,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewUsersRoles", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -139,7 +152,6 @@ namespace Skp_ProjektDB.Backend.Db
 
         public void UpdateRole(SqlConnection connection, string username, string oldRole, string newRole)
         {
-
             SqlCommand command = new SqlCommand("UpdateRole", connection);
             command.Parameters.AddWithValue("UserName", username);
             command.Parameters.AddWithValue("OldRole", oldRole);

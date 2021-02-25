@@ -24,33 +24,40 @@
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="HomePage">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="UserOverView">Brugeroversigt</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Project" asp-action="ProjectOverView">Projektoversigt</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
                         <li class="nav-item align-content-lg-end ml-auto">
-                            
-                                <button class="btn btn-outline-info bg-dark" type="button" data-toggle="collapse" data-target="#collapselogin" aria-expanded="false" aria-controls="collapselogin">
+
+                            <button class="btn btn-outline-info bg-dark" type="button" data-toggle="collapse" data-target="#collapselogin" aria-expanded="false" aria-controls="collapselogin">
                                 Log Ind
-                                </button>
-                            
-                                <div class="collapse list-group" id="collapselogin">
-                                    <form asp-action="UserLogin" asp-controller="User">
-                                        
-                                            <div class="list-group-item list-group-item-info">
-                                                <label class="align-top">Login</label>
-                                                <br />
-                                                <input type="text" name="loginName" placeholder="Login name (Unilogin)" required />
-                                            </div>
-                                            <div class="list-group-item list-group-item-info">
-                                                <label>Kodeord</label>
-                                                <br />
-                                                <input type="password" name="password" required />
-                                            <input class="btn btn-outline-info bg-dark" type="submit" value="Login" />
-                                            </div>
-                                            
-                                    </form>
-                                </div>
+                            </button>
+
+                            <div class="collapse list-group" id="collapselogin">
+                                <form asp-action="UserLogin" asp-controller="User">
+
+                                    <div class="list-group-item list-group-item-info">
+                                        <label class="align-top">Login</label>
+                                        <br />
+                                        <input type="text" name="loginName" placeholder="Login name (Unilogin)" required />
+                                    </div>
+                                    <div class="list-group-item list-group-item-info">
+                                        <label>Kodeord</label>
+                                        <br />
+                                        <input type="password" name="password" required />
+                                        <input class="btn btn-outline-info bg-dark" type="submit" value="Login" />
+                                    </div>
+
+                                </form>
+                            </div>
                         </li>
-                        
+
                     </ul>
 
                 </div>

@@ -16,6 +16,7 @@ namespace Skp_ProjektDB.Controllers
         private readonly IConfiguration configuration;
         private Backend.Managers.Db db = new Backend.Managers.Db();
         private Backend.Managers.Security security = new Backend.Managers.Security();
+        private static User logedInUser;
 
         public UserController(IConfiguration configuration)
         {
@@ -41,11 +42,12 @@ namespace Skp_ProjektDB.Controllers
                     if (hash == db.GetHash(loginName)) // if hashes matches == password is correct
                     {
                         // gets the user who logged in
-                        User user = db.GetUser(loginName);
-                        if (user.Roles.Contains(Roles.Instruktør))
-                            return Redirect("/Project/AdminUserSingleView");
+                        logedInUser = db.GetUser(loginName);
+                        db.GetUserRoles(logedInUser);
+                        if (logedInUser.Roles.Contains(Roles.Instruktør))
+                            return Redirect("/Project/ProjectOverView");
                         else
-                            return Redirect("/Project/");
+                            return Redirect("/User/UserOverView");
                     }
                     else
                     {
@@ -69,12 +71,32 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult UserOverView()
         {
             //returns a list of User models
-            return View(db.GetAllUsers());
+            var users = db.GetAllUsers();
+            users.ElementAt(0).Admin = false;
+
+
+            return View((List<User>)users);
         }
 
         public IActionResult SingleUserView(string userName)
         {
-            return View(db.GetUser(userName));
+            User user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
+            db.GetUserRoles(user);
+
+            if (user.Roles.Contains(Roles.Instruktør))
+            {
+                user.Admin = true;
+                return View(user);
+            }
+            else if (user.Login == logedInUser.Login)
+            {
+                user.Owner = true;
+                return View(user);
+            }
+            else
+            {
+                return View(user);
+            }
         }
 
         [HttpPost]
@@ -139,7 +161,8 @@ namespace Skp_ProjektDB.Controllers
         {
             if (user.Name == null)
             {
-                return View();
+                user.Admin = true;
+                return View(user);
             }
             else
             {
@@ -168,7 +191,7 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult DeleteUser(User user)
         {
-
+            user.Admin = true;
             return View(user);
         }
 
