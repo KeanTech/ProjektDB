@@ -12,7 +12,6 @@ namespace Skp_ProjektDB.Backend.Managers
             {
                 case Mediatype.Email:
                     _media = new Email(message, reciever);
-                    _media.SendMessage();
                     break;
                 default:
                     break;

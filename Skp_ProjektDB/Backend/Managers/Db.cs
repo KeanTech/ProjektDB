@@ -46,15 +46,13 @@ namespace Skp_ProjektDB.Backend.Managers
         #endregion --------------------------------------------------------------------------------------------------- ^^ Project CRUD Methods ^^
 
         #region --------------------------------------------------------------------------------------------------- vv User CRUD Methods vv
-        public byte[] GetSalt(string username)
+        public string GetSalt(string username)
         {
             DataSet data = _sqlCommands.GetSalt(username, _dbConnection.GetConnection());
             DataRow saltRow = data.Tables[0].Rows[0];
             string salt = saltRow[0].ToString();
 
-            byte[] saltBytes = Convert.FromBase64String(salt);
-
-            return saltBytes;
+            return salt;
         }
 
         public string GetHash(string username)

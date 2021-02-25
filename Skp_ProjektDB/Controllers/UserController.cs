@@ -23,21 +23,20 @@ namespace Skp_ProjektDB.Controllers
             db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
 
+        // login needs to handle failed logins
         public IActionResult UserLogin(string loginName, string password)
         {
             if (loginName == null)
                 return BadRequest();
             else
             {
-                //Get connection string 
-                //configuration.GetConnectionString("SkpDb");
-
-                //Make login here !!
-                byte[] salt = db.GetSalt(loginName);
+                // gets salt if username exists
+                string salt = db.GetSalt(loginName);
                 if (salt != null)
                 {
-                    string encrypted = security.Encrypt(Encoding.UTF8.GetBytes(password), salt);
-                    string hash = security.Hash(Encoding.UTF8.GetBytes(encrypted));
+                    // gets the hash value of typed password
+                    string encrypted = security.Encrypt(Encoding.UTF8.GetBytes(password), Convert.FromBase64String(salt));
+                    string hash = security.Hash(Convert.FromBase64String(encrypted));
 
                     if (hash == db.GetHash(loginName)) // if hashes matches == password is correct
                     {
@@ -70,7 +69,7 @@ namespace Skp_ProjektDB.Controllers
 
         public IActionResult SingleUserView(string userName)
         {
-            return View(db.GetUser(userName.Split('@')[0]));
+            return View(db.GetUser(userName));
         }
 
         [HttpPost]
@@ -123,8 +122,6 @@ namespace Skp_ProjektDB.Controllers
 
             return View();
         }
-
-
 
 
         //-------------------------------------------------------------- vv Admin only views vv
