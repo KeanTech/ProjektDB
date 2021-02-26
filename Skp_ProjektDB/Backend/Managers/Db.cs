@@ -72,7 +72,9 @@ namespace Skp_ProjektDB.Backend.Managers
             {
                 pass += random.Next(0, 10);
             }
-            user.Hash = security.Hash(Encoding.UTF8.GetBytes(pass));
+
+            string encrypted = security.Encrypt(Encoding.UTF8.GetBytes(pass), Convert.FromBase64String(user.Salt));
+            user.Hash = security.Hash(Convert.FromBase64String(encrypted));
             _sqlCommands.CreateUser(_dbConnection.GetConnection(), user);
 
             // send email
@@ -103,7 +105,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
             DataSet data = _sqlCommands.GetAllUsers(_dbConnection.GetConnection());
             DataRowCollection userRows = data.Tables[0].Rows;
-            
+
             foreach (DataRow userRow in userRows)
             {
                 // fill user with correct data (need to know data placement)
@@ -124,17 +126,20 @@ namespace Skp_ProjektDB.Backend.Managers
             DataSet data = _sqlCommands.ViewUsersRoles(_dbConnection.GetConnection(), user.Login);
             DataRowCollection userRows = data.Tables[0].Rows;
             foreach (DataRow userRow in userRows)
-            {   
+            {
                 foreach (var item in Enum.GetValues<Roles>())
                 {
-                    if(item.ToString() == userRow.ItemArray[0].ToString())
+                    if (item.ToString() == userRow.ItemArray[0].ToString())
                     {
                         user.Roles.Add(item);
                     }
                 }
             }
-
-            return null;
+            if (user.Roles == null)
+            {
+                user.Roles = new List<Roles>();
+            }
+            return user;
         }
         #endregion --------------------------------------------------------------------------------------------------- ^^ User CRUD Methods ^^ 
 

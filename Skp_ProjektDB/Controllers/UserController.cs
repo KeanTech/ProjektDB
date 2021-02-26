@@ -43,7 +43,7 @@ namespace Skp_ProjektDB.Controllers
                     {
                         // gets the user who logged in
                         logedInUser = db.GetUser(loginName);
-                        db.GetUserRoles(logedInUser);
+                        logedInUser = db.GetUserRoles(logedInUser);
                         if (logedInUser.Roles.Contains(Roles.Instruktør))
                             return Redirect("/Project/ProjectOverView");
                         else
@@ -52,13 +52,13 @@ namespace Skp_ProjektDB.Controllers
                     else
                     {
                         // password is wrong
-                        return BadRequest("Forkert Kode");
+                        return BadRequest("Login oplysningerne var ikke korrekt");
                     }
                 }
                 else
                 {
                     // username is incorrect!
-                    return BadRequest("Login navn findes ikke");
+                    return BadRequest("Login oplysningerne var ikke korrekt");
                 }
 
             }
