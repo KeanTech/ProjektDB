@@ -3,7 +3,7 @@
     public enum Roles
     {
         Instruktør,
-        Projektleder,
+        ProjektLeder,
         Udvikler,
         DevOps,
         Support

@@ -38,6 +38,14 @@
 
                     </div>
 
+                    <div class="list-group-item list-group-item-info">
+
+                        <form asp-action="AddRoleToUser">
+                            <button class="btn btn-success" type="submit" name="userName" value="@Model[i].Login">Tilføj rolle</button>
+                        </form>
+
+                    </div>
+
                 </div>
 
             </li>

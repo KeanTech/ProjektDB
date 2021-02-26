@@ -12,7 +12,7 @@ namespace Skp_ProjektDB.Backend.Db
     {
         public string CheckUserName(string userName)
         {
-            if (userName.Split('@')[1] == null)
+            if (userName.Split('@').Length < 2)
                 return userName;
             else
                 return userName.Split('@')[0];
@@ -125,9 +125,12 @@ namespace Skp_ProjektDB.Backend.Db
             foreach (Roles role in user.Roles)
             {
                 SqlCommand command = new SqlCommand("AddRoleToUser", connection);
+                command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("UserName", user.Login);
                 command.Parameters.AddWithValue("Role", role);
+                connection.Open();
                 command.ExecuteNonQuery();
+                connection.Close();
             }
         }
 

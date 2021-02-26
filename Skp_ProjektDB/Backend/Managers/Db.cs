@@ -78,10 +78,11 @@ namespace Skp_ProjektDB.Backend.Managers
             _sqlCommands.CreateUser(_dbConnection.GetConnection(), user);
 
             // send email
-            Thread t =
-                new Thread(() => message.SendMessage(Messages.Mediatype.Email, "Dit login er: " + user.Login + "\n Dit password er: " + pass + " HUSK at ændre det",
-                user.Login + @"@zbc.dk"));
-            t.Start();
+
+            //Thread t =
+            //    new Thread(() => message.SendMessage(Messages.Mediatype.Email, "Dit login er: " + user.Login + "\n Dit password er: " + pass + " HUSK at ændre det",
+            //    user.Login + @"@zbc.dk"));
+            //t.Start();
 
         }
 
@@ -121,27 +122,31 @@ namespace Skp_ProjektDB.Backend.Managers
             _sqlCommands.UpdateUser(_dbConnection.GetConnection(), user);
         }
 
+
+        #endregion --------------------------------------------------------------------------------------------------- ^^ User CRUD Methods ^^ 
+
+        #region -------------------------------------------------------------------------------------------- vv Role CRUD Methods vv
+        public void AddRoleToUser(User user)
+        {
+            _sqlCommands.AddRolesToUser(_dbConnection.GetConnection(), user);
+        }
+
         public User GetUserRoles(User user)
         {
             DataSet data = _sqlCommands.ViewUsersRoles(_dbConnection.GetConnection(), user.Login);
             DataRowCollection userRows = data.Tables[0].Rows;
-            foreach (DataRow userRow in userRows)
-            {
-                foreach (var item in Enum.GetValues<Roles>())
-                {
-                    if (item.ToString() == userRow.ItemArray[0].ToString())
-                    {
-                        user.Roles.Add(item);
-                    }
-                }
-            }
             if (user.Roles == null)
             {
                 user.Roles = new List<Roles>();
             }
+            foreach (DataRow userRow in userRows)
+            {
+                user.Roles.Add( (Roles)Convert.ToInt32(userRow.ItemArray[0]) );
+            }
             return user;
         }
-        #endregion --------------------------------------------------------------------------------------------------- ^^ User CRUD Methods ^^ 
+
+        #endregion
 
 
         public void SetConnection(string connectionString)

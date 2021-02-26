@@ -72,7 +72,7 @@ namespace Skp_ProjektDB.Controllers
         {
             //returns a list of User models
             var users = db.GetAllUsers();
-            users.ElementAt(0).Admin = false;
+            users.ElementAt(0).Admin = true;
 
 
             return View((List<User>)users);
@@ -200,6 +200,29 @@ namespace Skp_ProjektDB.Controllers
         {
             db.DeleteUser(db.GetUser(username));
             return Redirect("/User/UserOverView");
+        }
+
+        public IActionResult AddRoleToUser(string userName, string role)
+        {
+            User user = db.GetUser(userName);
+            user = db.GetUserRoles(user);
+            if (string.IsNullOrEmpty(role))
+            {
+                user.Admin = true;
+                return View(user);
+            }
+            else
+            {
+                //Save role to db
+                foreach (Roles roles in (Roles[]) Enum.GetValues(typeof(Roles)))
+                {
+                    if (role == roles.ToString())
+                        user.Roles.Add(roles);
+                }
+
+                db.AddRoleToUser(user);
+                return View("SingleUserView", user);
+            }
         }
     }
 }
