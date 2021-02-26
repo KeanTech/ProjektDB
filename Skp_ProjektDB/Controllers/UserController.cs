@@ -72,7 +72,7 @@ namespace Skp_ProjektDB.Controllers
         {
             //returns a list of User models
             var users = db.GetAllUsers();
-            users.ElementAt(0).Admin = true;
+            users.ElementAt(0).Admin = false;
 
 
             return View((List<User>)users);
@@ -81,7 +81,7 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult SingleUserView(string userName)
         {
             User user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
-            db.GetUserRoles(user);
+            user = db.GetUserRoles(user);
 
             if (user.Roles.Contains(Roles.Instruktør))
             {

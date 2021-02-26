@@ -96,7 +96,7 @@ namespace Skp_ProjektDB.Backend.Managers
             DataSet data = _sqlCommands.GetUser(username, _dbConnection.GetConnection());
             DataRow userRow = data.Tables[0].Rows[0];
             User user = new User() { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() };
-            // fille userRow data into user. (need to know the data placement)
+            // fill userRow data into user. (need to know the data placement)
             return user;
         }
 
