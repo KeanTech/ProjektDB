@@ -289,6 +289,7 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
+
         public DataSet ViewAllLogsFromTeam(SqlConnection connection, int projectId)
         {
             DataSet data = new DataSet();

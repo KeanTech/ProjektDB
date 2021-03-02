@@ -1,12 +1,10 @@
 ﻿using Skp_ProjektDB.Backend.Db;
-using Skp_ProjektDB.Backend.Security;
 using Skp_ProjektDB.Models;
 using Skp_ProjektDB.Types;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using System.Threading;
 
 namespace Skp_ProjektDB.Backend.Managers
 {
@@ -66,12 +64,12 @@ namespace Skp_ProjektDB.Backend.Managers
         public void CreateUser(User user)
         {
             user.Salt = security.GenerateSalt();
-            Random random = new Random();
-            string pass = "";
-            for (int i = 0; i < 8; i++)
-            {
-                pass += random.Next(0, 10);
-            }
+            //Random random = new Random();
+            string pass = "Kode1234";
+            //for (int i = 0; i < 8; i++)
+            //{
+            //    pass += random.Next(0, 10);
+            //}
 
             string encrypted = security.Encrypt(Encoding.UTF8.GetBytes(pass), Convert.FromBase64String(user.Salt));
             user.Hash = security.Hash(Convert.FromBase64String(encrypted));
@@ -141,7 +139,7 @@ namespace Skp_ProjektDB.Backend.Managers
             }
             foreach (DataRow userRow in userRows)
             {
-                user.Roles.Add( (Roles)Convert.ToInt32(userRow.ItemArray[0]) );
+                user.Roles.Add((Roles)Convert.ToInt32(userRow.ItemArray[0]));
             }
             return user;
         }
