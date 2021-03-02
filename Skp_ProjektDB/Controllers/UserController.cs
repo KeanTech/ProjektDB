@@ -5,9 +5,7 @@ using Skp_ProjektDB.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Skp_ProjektDB.Controllers
 {
@@ -71,11 +69,15 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult UserOverView()
         {
             //returns a list of User models
-            var users = db.GetAllUsers();
-            users.ElementAt(0).Admin = false;
+            List<User> users = db.GetAllUsers();
 
+            users.Where(x => x.Login == logedInUser.Login).Select(x => x.Owner = users.IndexOf(x));
+            if(logedInUser.Roles.Contains(Roles.Instruktør))
+            {
+                users.Where(x => x.Login == logedInUser.Login).Select(x => x.Admin = true);
+            }
 
-            return View((List<User>)users);
+            return View(users);
         }
 
         public IActionResult SingleUserView(string userName)
@@ -83,20 +85,28 @@ namespace Skp_ProjektDB.Controllers
             User user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
             user = db.GetUserRoles(user);
 
-            if (user.Roles.Contains(Roles.Instruktør))
+            if(logedInUser != null && !string.IsNullOrEmpty(logedInUser.Login))
             {
-                user.Admin = true;
-                return View(user);
-            }
-            else if (user.Login == logedInUser.Login)
-            {
-                user.Owner = true;
-                return View(user);
+                if (user.Roles.Contains(Roles.Instruktør))
+                {
+                    user.Admin = true;
+                    return View(user);
+                }
+                else if (user.Login == logedInUser.Login)
+                {
+                    user.Owner = 1;
+                    return View(user);
+                }
+                else
+                {
+                    return View(user);
+                }
             }
             else
             {
-                return View(user);
+                return BadRequest("Du er ikke logget ind");
             }
+            
         }
 
         [HttpPost]
@@ -115,8 +125,6 @@ namespace Skp_ProjektDB.Controllers
         }
 
         //------------------------------------------------------------ vv CRUD Views vv
-
-
 
         /// <summary>
         /// This is used to get user from Db

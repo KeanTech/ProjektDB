@@ -6,8 +6,7 @@
     else
         Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (Model.Admin == true)
-{
+
     <!-- This is the user display -->
     <div class="row container-fluid">
         <!-- The cards outer shell -->
@@ -22,17 +21,24 @@
                         <li class="list-group-item list-group-item-info">
                             <div class="list-group">
                                 <p><strong>Navn: </strong>@Model.Name</p>
-                                <p><strong>Email: </strong>@Model.Login@@zbc.dk</p>
+                                <p><strong>Email: </strong>@Html.DisplayFor(x => x.Login + "@zbc.dk")</p>
                             </div>
                         </li>
 
                         <!-- Competence details -->
-                        <li class="list-group-item list-group-item-info">
-                            <div class="list-group">
-                                <label style="margin-left:20px; font-size:20px; font-weight:bolder;" asp-for="@Model.Competence"></label>
-                                <p style="margin-left:30px;">@Model.Competence</p>
-                            </div>
-                        </li>
+                        @if (Model.Owner == 1)
+                        {
+                            <li class="list-group-item list-group-item-info">
+                                <div class="list-group">
+                                    <label style="margin-left:20px; font-size:20px; font-weight:bolder;" asp-for="@Model.Competence"></label>
+                                    <p style="margin-left:30px;">@Model.Competence</p>
+                                </div>
+                                <form asp-action="UpdateUser">
+
+                                </form>
+                            </li>
+                        }
+
 
                         <!-- Roles -->
                         <li class="list-group-item list-group-item-info">
@@ -98,190 +104,5 @@
         </div>
 
     </div>
-}
-else if (Model.Owner == true)
-{
-    <!-- This is the user display -->
-    <div class="row container-fluid">
-        <!-- The cards outer shell -->
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 py-2 border border-light card-color">
-
-            <!-- Makes a list for all the user information -->
-            <dl>
-
-                <dd>
-                    <ul class="list-group list-group-horizontal">
-                        <!-- Name details -->
-                        <li class="list-group-item list-group-item-info">
-                            <div class="list-group">
-                                <p><strong>Navn: </strong>@Model.Name</p>
-                                <p><strong>Email: </strong>@Model.Login@@zbc.dk</p>
-                            </div>
-                        </li>
-
-                        <!-- Competence details -->
-                        <li class="list-group-item list-group-item-info">
-                            <div class="list-group">
-                                <label style="margin-left:20px; font-size:20px; font-weight:bolder;" asp-for="@Model.Competence"></label>
-                                <p style="margin-left:30px;">@Model.Competence</p>
-                            </div>
-                        </li>
-
-                        <!-- Roles -->
-                        <li class="list-group-item list-group-item-info">
-                            <div class="list-group">
-                                <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.Roles)</label>
-                                @if (Model.Roles != null)
-                                {
-                                    @for (int j = 0; j < Model.Roles.Count; j++)
-                                    {
-                                        <p style="margin-left:30px;">@Model.Roles[j]</p>
-                                    }
-                                }
 
 
-                            </div>
-
-                        </li>
-                    </ul>
-
-                </dd>
-
-                <dd class="list-group-item-info border border-dark" style=" text-align:center;">
-                    <label style=" font-size:22px; font-weight:bold; " asp-for="@Model.Projects"></label>
-
-                    <table class="table table-bordered table-sm table-info table-hover">
-
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Titel</th>
-                                <th scope="col">Projektleder</th>
-                                <th scope="col">Start dato</th>
-                            </tr>
-                        </thead>
-
-                        @if (Model.Projects != null)
-                        {
-                            @for (int j = 0; j < Model.Projects.Count; j++)
-                            {
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">@{int count = j + 1;}@count</th>
-                                        <td>
-
-                                            <form asp-action="SingleProjectView" asp-controller="Project" method="post">
-                                                <button class="btn btn-link btn-sm" type="submit" name="projectName" value="@Model.Projects[j].Title">@Model.Projects[j].Title</button>
-
-                                            </form>
-                                        </td>
-                                        <td>@Model.Projects[j].Projectleder.Name</td>
-                                        <td>@Model.Projects[j].StartDate.ToString("dd-MM-yyyy")</td>
-                                    </tr>
-                                </tbody>
-                            }
-                        }
-
-                    </table>
-
-                </dd>
-
-            </dl>
-
-        </div>
-
-    </div>
-}
-else
-{
-    <!-- This is the user display -->
-    <div class="row container-fluid">
-        <!-- The cards outer shell -->
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 py-2 border border-light card-color">
-
-            <!-- Makes a list for all the user information -->
-            <dl>
-
-                <dd>
-                    <ul class="list-group list-group-horizontal">
-                        <!-- Name details -->
-                        <li class="list-group-item list-group-item-info">
-                            <div class="list-group">
-                                <p><strong>Navn: </strong>@Model.Name</p>
-                                <p><strong>Email: </strong>@Model.Login@@zbc.dk</p>
-                            </div>
-                        </li>
-
-                        <!-- Competence details -->
-                        <li class="list-group-item list-group-item-info">
-                            <div class="list-group">
-                                <label style="margin-left:20px; font-size:20px; font-weight:bolder;" asp-for="@Model.Competence"></label>
-                                <p style="margin-left:30px;">@Model.Competence</p>
-                            </div>
-                        </li>
-
-                        <!-- Roles -->
-                        <li class="list-group-item list-group-item-info">
-                            <div class="list-group">
-                                <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.Roles)</label>
-                                @if (Model.Roles != null)
-                                {
-                                    @for (int j = 0; j < Model.Roles.Count; j++)
-                                    {
-                                        <p style="margin-left:30px;">@Model.Roles[j]</p>
-                                    }
-                                }
-
-
-                            </div>
-
-                        </li>
-                    </ul>
-
-                </dd>
-
-                <dd class="list-group-item-info border border-dark" style=" text-align:center;">
-                    <label style=" font-size:22px; font-weight:bold; " asp-for="@Model.Projects"></label>
-
-                    <table class="table table-bordered table-sm table-info table-hover">
-
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Titel</th>
-                                <th scope="col">Projektleder</th>
-                                <th scope="col">Start dato</th>
-                            </tr>
-                        </thead>
-
-                        @if (Model.Projects != null)
-                        {
-                            @for (int j = 0; j < Model.Projects.Count; j++)
-                            {
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">@{int count = j + 1;}@count</th>
-                                        <td>
-
-                                            <form asp-action="SingleProjectView" asp-controller="Project" method="post">
-                                                <button class="btn btn-link btn-sm" type="submit" name="projectName" value="@Model.Projects[j].Title">@Model.Projects[j].Title</button>
-
-                                            </form>
-                                        </td>
-                                        <td>@Model.Projects[j].Projectleder.Name</td>
-                                        <td>@Model.Projects[j].StartDate.ToString("dd-MM-yyyy")</td>
-                                    </tr>
-                                </tbody>
-                            }
-                        }
-
-                    </table>
-
-                </dd>
-
-            </dl>
-
-        </div>
-
-    </div>
-}

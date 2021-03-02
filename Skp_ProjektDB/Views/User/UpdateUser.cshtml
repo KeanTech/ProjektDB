@@ -7,7 +7,7 @@
     else
         Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (Model.Admin == true)
+@if (Model.Admin == true || Model.Owner == 1)
 {
     <div class="list-group-item bg-dark border-0">
         <div class="row justify-content-center">
@@ -17,21 +17,25 @@
                 <hr />
                 <form asp-action="UpdateUser">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="Name" class="control-label font-weight-bolder"></label>
-                        <input asp-for="Name" value="@Model.Name" class="form-control" required />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
+                    @if (Model.Admin == true)
+                    {
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label font-weight-bolder"></label>
+                            <input asp-for="Name" value="@Model.Name" class="form-control" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Login" class="control-label font-weight-bolder"></label>
+                            <input asp-for="Login" value="@Model.Login" class="form-control" required />
+                            <span asp-validation-for="Login" class="text-danger"></span>
+                        </div>
+                    }
+
                     <div class="form-group">
                         <label asp-for="Competence" class="control-label font-weight-bolder"></label>
                         <input asp-for="Competence" value="@Model.Competence" class="form-control" required />
                         <span asp-validation-for="Competence" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Login" class="control-label font-weight-bolder"></label>
-                        <input asp-for="Login" value="@Model.Login" class="form-control" required />
-                        <span asp-validation-for="Login" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">

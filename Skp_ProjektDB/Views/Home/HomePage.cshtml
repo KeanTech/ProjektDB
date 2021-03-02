@@ -1,8 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
 }
 
+<div class="list-group-item bg-dark border-0">
+    <div class="row justify-content-center">
 
-<a asp-action="UserOverView" asp-controller="User">UserOverView</a>
-<a asp-action="ProjectOverView" asp-controller="Project">ProjektOverView</a>
+        <div class="col-md-4 list-group-item-info ">
+              <h3>
+                  Du skal logge ind for at se mere!
+
+                  Har du ikke adgang kontakt en fra project teamet
+              </h3>
+        </div>
+
+    </div>
+</div>

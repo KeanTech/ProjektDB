@@ -108,7 +108,7 @@ namespace Skp_ProjektDB.Backend.Managers
             foreach (DataRow userRow in userRows)
             {
                 // fill user with correct data (need to know data placement)
-                User user = new User() { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() + "@zbc.dk" };
+                User user = new User() { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() };
                 users.Add(user);
             }
 
