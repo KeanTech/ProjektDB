@@ -299,5 +299,61 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
+
+        //---
+
+        public void AddCustomerToProject(SqlConnection connection, int projectId, string name, string email)
+        {
+            SqlCommand command = new SqlCommand("AddCustomerToProject", connection);
+            command.Parameters.AddWithValue("ID", projectId);
+            command.Parameters.AddWithValue("Name", name); 
+            command.Parameters.AddWithValue("Email", email);
+            command.ExecuteNonQuery();
+        }
+
+        public void EditCustomer(SqlConnection connection, int customerId, string name, string email)
+        {
+            SqlCommand command = new SqlCommand("EditCustomer", connection);
+            command.Parameters.AddWithValue("CustomerID", customerId);
+            command.Parameters.AddWithValue("Name", name); 
+            command.Parameters.AddWithValue("Email", email);
+            command.ExecuteNonQuery();
+        }
+
+        public void DeleteCustomer(SqlConnection connection, int customerId)
+        {
+            SqlCommand command = new SqlCommand("DeleteCustomer", connection);
+            command.Parameters.AddWithValue("CustomerID", customerId);
+            command.ExecuteNonQuery();
+        }
+
+        public DataSet ViewAllCustomers(SqlConnection connection)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("ViewAllCustomers", connection);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+        public DataSet ViewALlCustomersOnProject(SqlConnection connection, int projectId)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("ViewALlCustomersOnProject", connection);
+            command.Parameters.AddWithValue("ID", projectId);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
+        public DataSet ViewCustomersProjects(SqlConnection connection, int customerId)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("ViewCustomersProjects", connection);
+            command.Parameters.AddWithValue("CustomerID", customerId);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
     }
 }
