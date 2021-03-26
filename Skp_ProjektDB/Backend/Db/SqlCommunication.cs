@@ -354,6 +354,30 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
+        
+        public DataSet ViewUserByID(SqlConnection connection, int userId)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("ViewUserByID", connection);
+            command.Parameters.AddWithValue("ID", userId);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
+        public void LoginAuthentication(SqlConnection connection, string username)
+        {
+            SqlCommand command = new SqlCommand("LoginAuthentication", connection);
+            command.Parameters.AddWithValue("Username", username);
+            command.ExecuteNonQuery();
+        }
+
+        public void LogoutAuthentication(SqlConnection connection, string username)
+        {
+            SqlCommand command = new SqlCommand("LogoutAuthentication", connection);
+            command.Parameters.AddWithValue("Username", username);
+            command.ExecuteNonQuery();
+        }
 
     }
 }
