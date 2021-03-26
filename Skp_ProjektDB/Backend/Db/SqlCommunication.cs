@@ -378,6 +378,26 @@ namespace Skp_ProjektDB.Backend.Db
             command.Parameters.AddWithValue("Username", username);
             command.ExecuteNonQuery();
         }
+        
+        public DataSet LastLoginTime(SqlConnection connection, string username)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("LastLoginTime", connection);
+            command.Parameters.AddWithValue("Username", username);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
+        public DataSet LastLogoutTime(SqlConnection connection, string username)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("LastLogoutTime", connection);
+            command.Parameters.AddWithValue("Username", username);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
 
     }
 }
