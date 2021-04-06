@@ -27,21 +27,24 @@ namespace Skp_ProjektDB.Models
         public Status Status { get; set; }
 
         [DisplayName("Projektleder")]
-        public User Projectleder { get; set; }
+        public string Projectleader { get; set; }
 
         public List<User> Team { get; set; }
 
-        public Project(string title, string description, List<string> log, DateTime startDate, DateTime endDate, User projectleder, List<User> team)
+        public Project(string title, string description, List<string> log, DateTime startDate, DateTime endDate, string projectleder, List<User> team)
         {
             Title = title;
             Description = description;
             Log = log;
             StartDate = startDate;
             EndDate = endDate;
-            Projectleder = projectleder;
+            Projectleader = projectleder;
             Team = team;
         }
 
+        public Project()
+        {
+        }
         
     }
 }

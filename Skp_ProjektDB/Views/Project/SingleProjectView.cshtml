@@ -62,19 +62,19 @@
                             </td>
 
                             <td class="align-middle">
-                                @if (Model.Team[j].Roles.Count > 1)
+                                @if (Model.Team[j].UserRoles.Count > 1)
                                 {
 
-                                    @for (int i = 0; i < Model.Team[j].Roles.Count; i++)
+                                    @for (int i = 0; i < Model.Team[j].UserRoles.Count; i++)
                                     {
 
-                                        @if (i >= Model.Team[j].Roles.Count - 1)
+                                        @if (i >= Model.Team[j].UserRoles.Count - 1)
                                         {
-                                            <label>@Model.Team[j].Roles[i]</label>
+                                            <label>@Model.Team[j].UserRoles[i]</label>
                                         }
                                         else
                                         {
-                                            <label>@Model.Team[j].Roles[i],</label>
+                                            <label>@Model.Team[j].UserRoles[i],</label>
                                         }
 
                                     }
@@ -83,7 +83,7 @@
                                 else
                                 {
 
-                                    @Model.Team[j].Roles[0]
+                                    @Model.Team[j].UserRoles[0]
 
                                 }
                             </td>

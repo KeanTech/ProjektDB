@@ -30,6 +30,7 @@
                             <input asp-for="Login" value="@Model.Login" class="form-control" required />
                             <span asp-validation-for="Login" class="text-danger"></span>
                         </div>
+
                     }
 
                     <div class="form-group">
@@ -43,6 +44,26 @@
                         <a asp-action="UserOverView">Fortryd</a>
                     </div>
                 </form>
+                @if (Model.UserRoles.Count > 0 && Model.Admin == true)
+                {
+                    <form asp-action="RemoveRoleFromUser">
+                        <div class="form-group">
+                            <label asp-for="UserRoles" class="control-label font-weight-bolder"></label>
+                            @if (Model.UserRoles != null)
+                            {
+                                @foreach (var item in Model.UserRoles)
+                                {
+                                    <select asp-for="UserRoles">
+                                        <option value="@item">@item</option>
+                                    </select>
+                                }
+                            }
+                            <span asp-validation-for="UserRoles" class="text-danger"></span>
+                        </div>
+                    </form>
+
+                }
+
             </div>
 
         </div>

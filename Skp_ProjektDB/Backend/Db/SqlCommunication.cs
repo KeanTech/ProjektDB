@@ -17,9 +17,10 @@ namespace Skp_ProjektDB.Backend.Db
             else
                 return userName.Split('@')[0];
         }
+        
+        //------------------------------------------------------------------------- User Methods
 
-
-
+        #region User Crud Methods
         public void CreateUser(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("CreateUser", connection);
@@ -118,11 +119,15 @@ namespace Skp_ProjektDB.Backend.Db
             return data;
         }
 
-        //---
+        #endregion
+
+        //------------------------------------------------------------------------- Role Methods
+
+        #region Role Crud Methods
 
         public void AddRolesToUser(SqlConnection connection, User user)
         {
-            foreach (Roles role in user.Roles)
+            foreach (User.Roles role in user.UserRoles)
             {
                 SqlCommand command = new SqlCommand("AddRoleToUser", connection);
                 command.CommandType = CommandType.StoredProcedure;
@@ -161,20 +166,23 @@ namespace Skp_ProjektDB.Backend.Db
             command.Parameters.AddWithValue("NewRole", newRole);
             command.ExecuteNonQuery();
         }
+        #endregion
 
-        //---
-
+        //------------------------------------------------------------------------- Project Methods
+        #region Project Crud Methods
         public void CreateProject(SqlConnection connection, Project project)
         {
-
             SqlCommand command = new SqlCommand("CreateProject", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Status", project.Status);
             command.Parameters.AddWithValue("Title", project.Title);
             command.Parameters.AddWithValue("Description", project.Description);
             command.Parameters.AddWithValue("StartDate", project.StartDate);
             command.Parameters.AddWithValue("EndDate", project.EndDate);
-            command.Parameters.AddWithValue("ProjectLeader", project.Projectleder);
+            command.Parameters.AddWithValue("ProjectLeader", project.Projectleader);
+            connection.Open();
             command.ExecuteNonQuery();
+            connection.Close();
         }
 
         public DataSet GetAllProjects(SqlConnection connection)
@@ -205,7 +213,7 @@ namespace Skp_ProjektDB.Backend.Db
             return data;
         }
 
-        public void UpdateProject(SqlConnection connection, Project project)
+        public void UpdateProject(SqlConnection connection, ProjectModel project)
         {
             SqlCommand command = new SqlCommand("UpdateProject", connection);
             command.Parameters.AddWithValue("Status", project.Id);
@@ -214,24 +222,32 @@ namespace Skp_ProjektDB.Backend.Db
             command.Parameters.AddWithValue("Description", project.Description);
             command.Parameters.AddWithValue("StartDate", project.StartDate);
             command.Parameters.AddWithValue("EndDate", project.EndDate);
-            command.Parameters.AddWithValue("ProjectLeader", project.Projectleder);
+            command.Parameters.AddWithValue("ProjectLeader", project.Projectleader);
             command.ExecuteNonQuery();
         }
 
-        public void DeleteProject(SqlConnection connection, Project project)
+        public void DeleteProject(SqlConnection connection, int projectId)
         {
             SqlCommand command = new SqlCommand("DeleteProject", connection);
-            command.Parameters.AddWithValue("Status", project.Id);
+            command.Parameters.AddWithValue("Status", projectId);
             command.ExecuteNonQuery();
         }
 
-        //---
+
+        #endregion
+
+        //------------------------------------------------------------------------- Team Methods
+
+        #region Team Crud Methods
         public void AddUserToTeam(SqlConnection connection, int projectId, string username)
         {
             SqlCommand command = new SqlCommand("AddUserToTeam", connection);
             command.Parameters.AddWithValue("ID", projectId);
             command.Parameters.AddWithValue("Username", username);
+            command.CommandType = CommandType.StoredProcedure;
+            connection.Open();
             command.ExecuteNonQuery();
+            connection.Close();
         }
 
         public void RemoveUserFromTeam(SqlConnection connection, int projectId, string username)
@@ -239,22 +255,27 @@ namespace Skp_ProjektDB.Backend.Db
             SqlCommand command = new SqlCommand("RemoveUserFromTeam", connection);
             command.Parameters.AddWithValue("ID", projectId);
             command.Parameters.AddWithValue("Username", username);
+            command.CommandType = CommandType.StoredProcedure;
+            connection.Open();
             command.ExecuteNonQuery();
+            connection.Close();
         }
-
 
         public DataSet GetTeam(SqlConnection connection, int projectId)
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("GetTeam", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", projectId);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
             return data;
         }
+        #endregion
 
-        //---
+        //------------------------------------------------------------------------- Team Methods
 
+        #region Log Crud Methods
         public void AddLogToProject(SqlConnection connection, Project project, string username)
         {
             SqlCommand command = new SqlCommand("AddLogToProject", connection);
@@ -299,14 +320,16 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
+        #endregion
 
-        //---
+        //------------------------------------------------------------------------- Costumer Methods
 
+        #region Customer Crud Methods
         public void AddCustomerToProject(SqlConnection connection, int projectId, string name, string email)
         {
             SqlCommand command = new SqlCommand("AddCustomerToProject", connection);
             command.Parameters.AddWithValue("ID", projectId);
-            command.Parameters.AddWithValue("Name", name); 
+            command.Parameters.AddWithValue("Name", name);
             command.Parameters.AddWithValue("Email", email);
             command.ExecuteNonQuery();
         }
@@ -315,7 +338,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             SqlCommand command = new SqlCommand("EditCustomer", connection);
             command.Parameters.AddWithValue("CustomerID", customerId);
-            command.Parameters.AddWithValue("Name", name); 
+            command.Parameters.AddWithValue("Name", name);
             command.Parameters.AddWithValue("Email", email);
             command.ExecuteNonQuery();
         }
@@ -335,10 +358,10 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
-        public DataSet ViewALlCustomersOnProject(SqlConnection connection, int projectId)
+        public DataSet ViewAllCustomersOnProject(SqlConnection connection, int projectId)
         {
             DataSet data = new DataSet();
-            SqlCommand command = new SqlCommand("ViewALlCustomersOnProject", connection);
+            SqlCommand command = new SqlCommand("ViewAllCustomersOnProject", connection);
             command.Parameters.AddWithValue("ID", projectId);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -354,6 +377,6 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
-
+        #endregion
     }
 }

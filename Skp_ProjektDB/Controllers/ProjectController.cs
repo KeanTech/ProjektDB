@@ -15,7 +15,6 @@ namespace Skp_ProjektDB.Controllers
     {
         private readonly IConfiguration configuration;
         private Db db = new Db();
-
         public ProjectController(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -29,9 +28,9 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult SingleProjectView(string projectName)
         {
-            var project = GetProjects().Where(x => x.Title == projectName).FirstOrDefault();
-            project.Team = db.GetAllUsers();
-            return View(new ProjectModel(project.Title, project.Description, project.Log, project.StartDate, project.EndDate, project.Projectleder, project.Team));
+            var project = db.GetAllProjects().Where(x => x.Title == projectName).FirstOrDefault();
+            project.Team = db.GetTeam(project.Id);
+            return View(project);
         }
 
         /// <summary>
@@ -40,17 +39,10 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult ProjectOverView()
         {
-            var users = db.GetAllUsers();
             var projects = db.GetAllProjects();
             projects.OrderBy(x => x.Title.ToLower() == "a");
 
-            List<ProjectModel> projectModels = new List<ProjectModel>();
-            foreach (var project in projects)
-            {
-                projectModels.Add(new ProjectModel(project.Title, project.Description, project.Log, project.StartDate, project.EndDate, project.Projectleder, project.Team));
-            }
-
-            return View(projectModels);
+            return View(projects);
         }
 
         [HttpGet]
@@ -61,7 +53,7 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult WriteToLog(int projectId)
         {
-            return View(GetProjects().Where(x => x.Id == projectId).FirstOrDefault());
+            return View(db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault());
         }
 
         [HttpPost]
@@ -71,7 +63,7 @@ namespace Skp_ProjektDB.Controllers
 
             //Save the log to db
             //add username to logstring 
-            var project = GetProjects().Where(x => x.Id == projectId).FirstOrDefault();
+            var project = db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault();
 
             return Redirect("/Project/ProjectOverView");
         }
@@ -82,17 +74,17 @@ namespace Skp_ProjektDB.Controllers
         {
             if (projectName != null)
             {
-                List<ProjectModel> searchedProject = GetProjects().FindAll(x => x.Title.ToLower().Contains(projectName.ToLower()));
+                List<ProjectModel> searchedProject = db.GetAllProjects().FindAll(x => x.Title.ToLower().Contains(projectName.ToLower()));
                 SortOutSearchCriteria(searchedProject, nameCheck, projectleaderCheck, descriptionCheck, logCheck);
 
                 if (searchedProject != null)
                     return View("ProjectOverView", searchedProject);
                 else
-                    return View("ProjectOverView", SortOutSearchCriteria(GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
+                    return View("ProjectOverView", SortOutSearchCriteria(db.GetAllProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
             }
             else
             {
-                return View("ProjectOverView", SortOutSearchCriteria(GetProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
+                return View("ProjectOverView", SortOutSearchCriteria(db.GetAllProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
             }
         }
 
@@ -108,41 +100,51 @@ namespace Skp_ProjektDB.Controllers
             return projectModels;
         }
 
-
-        //-----------------------------------------------------CRUD Methods
+        //-----------------------------------------------------CRUD Project Methods
         [HttpGet]
         public IActionResult CreateProject()
         {
-            return View();
+            return View(new ProjectModel() { Users = db.GetAllUsers(), StartDate = DateTime.Now.Date, EndDate = DateTime.Now.Date });
         }
 
         [HttpPost]
-        public void CreateProject(Project project)
+        public void CreateProject(ProjectModel model)
         {
-            SqlConnection connection = new SqlConnection(configuration.GetConnectionString("SkpDb"));
-            SqlCommand sqlCommand = new SqlCommand("INSERT INTO Projects(Status, Title, Description, Log, StartDate, EndDate, ProjectLeader) VALUES (@Status, @Title, @Description, @Log, @StartDate, @EndDate, @ProjectLeader);", connection);
+            Project project = (Project)model;
 
-            sqlCommand.Parameters.Add(new SqlParameter("@Status", project.Status));
-            sqlCommand.Parameters.Add(new SqlParameter("@Title", project.Title));
-            sqlCommand.Parameters.Add(new SqlParameter("@Description", project.Description));
-            sqlCommand.Parameters.Add(new SqlParameter("@StartDate", project.StartDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            sqlCommand.Parameters.Add(new SqlParameter("@EndDate", project.EndDate.ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            sqlCommand.Parameters.Add(new SqlParameter("ProjectLeader", project.Projectleder));
-            connection.Open();
-            sqlCommand.ExecuteNonQuery();
-            connection.Close();
-
-            Redirect("/HomePage");
+            db.CreateProject(project);
+            Redirect("/Project/ProjectOverView");
         }
 
-        public Project GetProject()
+        public void DeleteProject(int projectId)
         {
-            return null;
+            db.DeleteProject(projectId);
         }
 
-        public static List<ProjectModel> GetProjects() //Made static for testing
+        //-----------------------------------------------------CRUD Team Methods
+
+        public void RemoveUserFromTeam(string userName, int projectId)
         {
-            return null;
+            db.RemoveUserFromTeam(userName, projectId);
+            Redirect("/Project/ProjectOverView");
+        }
+
+        public void AddUserToTeam(string userName, int projectId)
+        {
+            db.AddUserToTeam(projectId, userName);
+            Redirect("/Project/ProjectOverView");
+        }
+
+        //-----------------------------------------------------CRUD Role Methods
+
+        public void RemoveRoleFromUser(User user, User.Roles role) 
+        {
+            db.RemoveRoleFromUser(user.Login, role);
+        }
+
+        public void AddRoleToUser(User user)
+        {
+
         }
     }
 }

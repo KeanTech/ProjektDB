@@ -26,7 +26,7 @@ namespace Skp_ProjektDB.Controllers
         public IActionResult UserLogin(string loginName, string password)
         {
             if (loginName == null)
-                return BadRequest();
+                return BadRequest("Login oplysningerne var ikke korrekt");
             else
             {
                 // gets salt if username exists
@@ -42,7 +42,7 @@ namespace Skp_ProjektDB.Controllers
                         // gets the user who logged in
                         logedInUser = db.GetUser(loginName);
                         logedInUser = db.GetUserRoles(logedInUser);
-                        if (logedInUser.Roles.Contains(Roles.Instruktør))
+                        if (logedInUser.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
                             return Redirect("/Project/ProjectOverView");
                         else
                             return Redirect("/User/UserOverView");
@@ -58,7 +58,6 @@ namespace Skp_ProjektDB.Controllers
                     // username is incorrect!
                     return BadRequest("Login oplysningerne var ikke korrekt");
                 }
-
             }
         }
 
@@ -68,26 +67,42 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult UserOverView()
         {
-            //returns a list of User models
-            List<User> users = db.GetAllUsers();
-
-            users.Where(x => x.Login == logedInUser.Login).Select(x => x.Owner = users.IndexOf(x));
-            if(logedInUser.Roles.Contains(Roles.Instruktør))
+            if (logedInUser != null)
             {
-                users.Where(x => x.Login == logedInUser.Login).Select(x => x.Admin = true);
-            }
+                //returns a list of User models
+                List<User> users = db.GetAllUsers();
 
-            return View(users);
+                users.Where(x => x.Login == logedInUser.Login).Select(x => x.Owner = users.IndexOf(x));
+                if (logedInUser.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
+                {
+                    users.Where(x => x.Login == logedInUser.Login).Select(x => x.Admin = true);
+                }
+
+                return View(users);
+            }
+            else
+                return BadRequest("Du er ikke logget ind");
         }
 
         public IActionResult SingleUserView(string userName)
         {
-            User user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
-            user = db.GetUserRoles(user);
-
-            if(logedInUser != null && !string.IsNullOrEmpty(logedInUser.Login))
+            User user = null;
+            if (userName != null)
             {
-                if (user.Roles.Contains(Roles.Instruktør))
+                user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
+                user = db.GetUserRoles(user);
+
+                var projects = db.GetAllProjects();
+                foreach (var item in projects)
+                {
+                    item.Team = db.GetTeam(item.Id);
+                }
+
+            }
+
+            if (logedInUser != null && !string.IsNullOrEmpty(logedInUser.Login))
+            {
+                if (user.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
                 {
                     user.Admin = true;
                     return View(user);
@@ -106,7 +121,6 @@ namespace Skp_ProjektDB.Controllers
             {
                 return BadRequest("Du er ikke logget ind");
             }
-            
         }
 
         [HttpPost]
@@ -139,23 +153,27 @@ namespace Skp_ProjektDB.Controllers
         /// This is used to update user data
         /// </summary>
         /// <returns></returns>
-        public IActionResult UpdateUser(User user)
+        public IActionResult UpdateUser(string userName)
         {
             var users = db.GetAllUsers();
-
-            foreach (var userInList in users)
+            if (logedInUser != null)
             {
-                if (userInList == user)
+                foreach (var userInList in users)
                 {
-                    return View(user);
+                    if (userInList.Login == userName)
+                    {
+                        userInList.Owner = 1;
+                        return View(userInList);
+                    }
+                    else
+                    {
+                        return View(db.GetUser(userName));
+                    }
                 }
-                else
-                {
-                    return View(db.GetUser(user.Login));
-                }
+                return View();
             }
-
-            return View();
+            else
+                return BadRequest("Du er ikke logget ind");
         }
 
 
@@ -167,29 +185,34 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult CreateUser(User user)
         {
-            if (user.Name == null)
+            if (logedInUser != null)
             {
-                user.Admin = true;
-                return View(user);
+                if (user.Name == null)
+                {
+                    user.Admin = true;
+                    return View(user);
+                }
+                else
+                {
+                    // create salt for user
+                    user.Salt = security.GenerateSalt();
+
+                    // create random password for user
+                    Random random = new Random();
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        sb.Append(random.Next(0, 10));
+                    }
+                    user.Hash = security.Hash(Convert.FromBase64String(security.Encrypt(Encoding.UTF8.GetBytes(sb.ToString()), Convert.FromBase64String(user.Salt))));
+
+                    // create user on database
+                    db.CreateUser(user);
+                    return Redirect("/User/UserOverView");
+                }
             }
             else
-            {
-                // create salt for user
-                user.Salt = security.GenerateSalt();
-
-                // create random password for user
-                Random random = new Random();
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < 10; i++)
-                {
-                    sb.Append(random.Next(0, 10));
-                }
-                user.Hash = security.Hash(Convert.FromBase64String(security.Encrypt(Encoding.UTF8.GetBytes(sb.ToString()), Convert.FromBase64String(user.Salt))));
-
-                // create user on database
-                db.CreateUser(user);
-                return Redirect("/User/UserOverView");
-            }
+                return BadRequest("Du er ikke logget ind");
         }
 
         [HttpGet]
@@ -199,38 +222,58 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult DeleteUser(User user)
         {
-            user.Admin = true;
-            return View(user);
-        }
-
-        [HttpPost]
-        public IActionResult DeleteUser(string username)
-        {
-            db.DeleteUser(db.GetUser(username));
-            return Redirect("/User/UserOverView");
-        }
-
-        public IActionResult AddRoleToUser(string userName, string role)
-        {
-            User user = db.GetUser(userName);
-            user = db.GetUserRoles(user);
-            if (string.IsNullOrEmpty(role))
+            if (logedInUser != null)
             {
                 user.Admin = true;
                 return View(user);
             }
             else
-            {
-                //Save role to db
-                foreach (Roles roles in (Roles[]) Enum.GetValues(typeof(Roles)))
-                {
-                    if (role == roles.ToString())
-                        user.Roles.Add(roles);
-                }
+                return BadRequest("Du er ikke logget ind");
+        }
 
-                db.AddRoleToUser(user);
-                return View("SingleUserView", user);
+        [HttpPost]
+        public IActionResult DeleteUser(string username)
+        {
+            if (logedInUser != null)
+            {
+                db.DeleteUser(db.GetUser(username));
+                return Redirect("/User/UserOverView");
             }
+            else
+                return BadRequest("Du er ikke loget ind");
+        }
+
+        public IActionResult AddRoleToUser(string userName, string role)
+        {
+            if (logedInUser != null)
+            {
+                User user = db.GetUser(userName);
+                user = db.GetUserRoles(user);
+                if (string.IsNullOrEmpty(role))
+                {
+                    user.Admin = true;
+                    return View(user);
+                }
+                else
+                {
+                    //Save role to db
+                    foreach (User.Roles roles in (User.Roles[])Enum.GetValues(typeof(User.Roles)))
+                    {
+                        if (role == roles.ToString())
+                            user.UserRoles.Add(roles);
+                    }
+
+                    db.AddRoleToUser(user);
+                    return View("SingleUserView", user);
+                }
+            }
+            else
+                return BadRequest("Du er ikke logget ind");
+        }
+
+        public void RemoveRoleFromUser() 
+        {
+
         }
     }
 }

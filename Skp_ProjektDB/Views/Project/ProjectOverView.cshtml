@@ -71,7 +71,6 @@
                 </dl>
             </div>
 
-
         </div>
 
         <dl class="">
@@ -91,7 +90,7 @@
                                     <th class="text-center" scope="col">Titel</th>
                                 }
 
-                                @if (Model[i].LogCheckbox == true)
+                                @if (Model[i].DescriptionCheckbox == true)
                                 {
                                     <th class="text-center" scope="col">Beskrivelse</th>
 
@@ -135,14 +134,14 @@
                                     <td class="align-middle text-center" scope="row">@Model[i].Description</td>
                                 }
 
-                                @if (Model[i].LogCheckbox == true)
+                                @if (Model[i].LogCheckbox == true && Model[i].Log.Count > 0)
                                 {
                                     <td class="align-middle text-center" scope="row">@Model[i].Log[Model[i].Log.Count - 1]</td>
                                 }
 
                                 @if (Model[i].ProjectLeaderCheckbox == true)
                                 {
-                                    <td class="align-middle text-center" scope="row">@Model[i].Projectleder.Name </td>
+                                    <td class="align-middle text-center" scope="row">@Model[i].Projectleader </td>
                                 }
                                 <td class="align-middle text-center" scope="row">@Model[i].StartDate.ToString("dd-MM-yyyy")</td>
                                 <td class="align-middle text-center" scope="row">@Model[i].EndDate.ToString("dd-MM-yyyy")</td>

@@ -22,19 +22,18 @@
                 </div>
                 <hr />
                 <div class="list-group">
-                    <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.Roles):</label>
-                    @if (Model.Roles != null)
+                    <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.UserRoles):</label>
+                    @if (Model.UserRoles != null)
                     {
-                        @for (int j = 0; j < Model.Roles.Count; j++)
+                        @for (int j = 0; j < Model.UserRoles.Count; j++)
                         {
-                            <p style="margin-left:30px;">@Model.Roles[j]</p>
+                            <p style="margin-left:30px;">@Model.UserRoles[j]</p>
                         }
                     }
                     else
                     {
                         <p>Ingen roller fundet</p>
                     }
-
 
                 </div>
                 <hr />

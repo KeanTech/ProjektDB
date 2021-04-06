@@ -8,12 +8,15 @@ namespace Skp_ProjektDB.Models
 {
     public class ProjectModel : Project
     {
-        public ProjectModel(string title, string description, List<string> log, DateTime startDate, DateTime endDate, User projectleder, List<User> team) : base(title, description, log, startDate, endDate, projectleder, team)
+        public ProjectModel()
         {
+            Log = new List<string>();
             NameCheckbox = true;
             DescriptionCheckbox = true;
-            LogCheckbox = true;
         }
+
+
+        public List<User> Users { get; set; }
 
         public bool NameCheckbox { get; set; }
 
@@ -23,6 +26,5 @@ namespace Skp_ProjektDB.Models
 
         public bool LogCheckbox { get; set; }
 
-       
     }
 }

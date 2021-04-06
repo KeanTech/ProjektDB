@@ -15,19 +15,51 @@ namespace Skp_ProjektDB.Backend.Managers
         private Security security = new Security();
         private Message message = new Message();
 
+        #region vv Team CRUD Methods vv
+
+        public void AddUserToTeam(int projectID, string userName)
+        {
+            _sqlCommands.AddUserToTeam(_dbConnection.GetConnection(), projectID, userName);
+        }
+
+        public List<User> GetTeam(int projectID)
+        {
+            DataSet data = _sqlCommands.GetTeam(_dbConnection.GetConnection(), projectID);
+            List<User> teamNames = new List<User>();
+
+            foreach (DataRow row in data.Tables[0].Rows)
+            {
+                teamNames.Add(GetUser(row.ItemArray[0].ToString()));
+            }
+            return teamNames;
+        }
+
+        public void RemoveUserFromTeam(string userName, int projectId)
+        {
+            _sqlCommands.RemoveUserFromTeam(_dbConnection.GetConnection(), projectId, userName);
+        }
+
+        #endregion
+
         #region --------------------------------------------------------------------------------------------------- vv Project CRUD Methods vv 
+
+        public void CreateProject(Project project)
+        {
+            _sqlCommands.CreateProject(_dbConnection.GetConnection(), project);
+        }
 
         public Project GetProject(int projectId)
         {
             DataSet data = _sqlCommands.GetProject(_dbConnection.GetConnection(), projectId);
-            DataRow dataRow = data.Tables[0].Rows[0];
-            // set data
-
-            // get team
-            int projectid = int.Parse(dataRow[0].ToString());
-            DataSet tream = _sqlCommands.GetTeam(_dbConnection.GetConnection(), 0);
-
-            return new Project("", "", new List<string>(), DateTime.Now, DateTime.Now, new User(), new List<User>());
+            ProjectModel project = new ProjectModel();
+            project.Id = (int)data.Tables[0].Rows[0].ItemArray[0];
+            project.Status = (Status) Convert.ToInt32(data.Tables[0].Rows[0].ItemArray[1].ToString());
+            project.Title = data.Tables[0].Rows[0].ItemArray[2].ToString();
+            project.Description = data.Tables[0].Rows[0].ItemArray[3].ToString();
+            project.StartDate = (DateTime)data.Tables[0].Rows[0].ItemArray[4];
+            project.EndDate = (DateTime)data.Tables[0].Rows[0].ItemArray[5];
+            project.Projectleader = data.Tables[0].Rows[0].ItemArray[6].ToString();
+            return project;
         }
 
         public List<ProjectModel> GetAllProjects()
@@ -36,9 +68,28 @@ namespace Skp_ProjektDB.Backend.Managers
             List<ProjectModel> projects = new List<ProjectModel>();
             foreach (DataRow dataRow in data.Tables[0].Rows)
             {
-
+                ProjectModel project = new ProjectModel();
+                project.Id = (int)dataRow.ItemArray[0];
+                project.Status = (Status)Convert.ToInt32(dataRow.ItemArray[1]);
+                project.Title = dataRow.ItemArray[2].ToString();
+                project.Description = dataRow.ItemArray[3].ToString();
+                project.StartDate = (DateTime)dataRow.ItemArray[4];
+                project.EndDate = (DateTime)dataRow.ItemArray[5];
+                project.Projectleader = dataRow.ItemArray[6].ToString();
+                projects.Add(project);
             }
+
             return projects;
+        }
+
+        public void DeleteProject(int projectId)
+        {
+            _sqlCommands.DeleteProject(_dbConnection.GetConnection(), projectId);
+        }
+
+        public void UpdateProject(ProjectModel project)
+        {
+            _sqlCommands.UpdateProject(_dbConnection.GetConnection(), project);
         }
 
         #endregion --------------------------------------------------------------------------------------------------- ^^ Project CRUD Methods ^^
@@ -133,19 +184,23 @@ namespace Skp_ProjektDB.Backend.Managers
         {
             DataSet data = _sqlCommands.ViewUsersRoles(_dbConnection.GetConnection(), user.Login);
             DataRowCollection userRows = data.Tables[0].Rows;
-            if (user.Roles == null)
+            if (user.UserRoles == null)
             {
-                user.Roles = new List<Roles>();
+                user.UserRoles = new List<User.Roles>();
             }
             foreach (DataRow userRow in userRows)
             {
-                user.Roles.Add((Roles)Convert.ToInt32(userRow.ItemArray[0]));
+                user.UserRoles.Add((User.Roles)Convert.ToInt32(userRow.ItemArray[0]));
             }
             return user;
         }
 
-        #endregion
+        public void RemoveRoleFromUser(string userName, User.Roles role)
+        {
+            _sqlCommands.RemoveRoleFromUser(_dbConnection.GetConnection(), userName, role.ToString());
+        }
 
+        #endregion
 
         public void SetConnection(string connectionString)
         {

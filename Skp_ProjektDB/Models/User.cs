@@ -10,8 +10,17 @@ namespace Skp_ProjektDB.Models
         {
             Name = name;
             Login = login;
-            Roles = roles;
+            UserRoles = roles;
             Projects = new List<Project>();
+        }
+
+        public enum Roles
+        {
+            Instruktør,
+            ProjektLeder,
+            Udvikler,
+            DevOps,
+            Support
         }
 
         [DisplayName("Navn")]
@@ -25,7 +34,7 @@ namespace Skp_ProjektDB.Models
         public string Login { get; set; }
         
         [DisplayName("Roller")]
-        public List<Roles> Roles { get; set; }
+        public List<Roles> UserRoles { get; set; }
 
         //This is for view only dont add this to db (User is part of Project)
         [DisplayName("Projekter")]
@@ -35,6 +44,8 @@ namespace Skp_ProjektDB.Models
         public int Owner { get; set; }
         public User()
         {
+            Projects = new List<Project>();
+            UserRoles = new List<Roles>();
         }
 
     }

@@ -21,7 +21,7 @@
                         <li class="list-group-item list-group-item-info">
                             <div class="list-group">
                                 <p><strong>Navn: </strong>@Model.Name</p>
-                                <p><strong>Email: </strong>@Html.DisplayFor(x => x.Login + "@zbc.dk")</p>
+                                <p><strong>Email: </strong>@Model.Login@@zbc.dk</p>
                             </div>
                         </li>
 
@@ -39,19 +39,17 @@
                             </li>
                         }
 
-
                         <!-- Roles -->
                         <li class="list-group-item list-group-item-info">
                             <div class="list-group">
-                                <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.Roles)</label>
-                                @if (Model.Roles != null)
+                                <label style="margin-left:20px; font-size:20px; font-weight:bolder;">@Html.DisplayNameFor(m => m.UserRoles)</label>
+                                @if (Model.UserRoles != null)
                                 {
-                                    @for (int j = 0; j < Model.Roles.Count; j++)
+                                    @for (int j = 0; j < Model.UserRoles.Count; j++)
                                     {
-                                        <p style="margin-left:30px;">@Model.Roles[j]</p>
+                                        <p style="margin-left:30px;">@Model.UserRoles[j]</p>
                                     }
                                 }
-
 
                             </div>
 
@@ -67,10 +65,12 @@
 
                         <thead>
                             <tr>
+
                                 <th scope="col">#</th>
                                 <th scope="col">Titel</th>
                                 <th scope="col">Projektleder</th>
                                 <th scope="col">Start dato</th>
+                            
                             </tr>
                         </thead>
 
@@ -87,8 +87,9 @@
                                                 <button class="btn btn-link btn-sm" type="submit" name="projectName" value="@Model.Projects[j].Title">@Model.Projects[j].Title</button>
 
                                             </form>
+
                                         </td>
-                                        <td>@Model.Projects[j].Projectleder.Name</td>
+                                        <td>@Model.Projects[j].Projectleader</td>
                                         <td>@Model.Projects[j].StartDate.ToString("dd-MM-yyyy")</td>
                                     </tr>
                                 </tbody>
@@ -104,5 +105,3 @@
         </div>
 
     </div>
-
-
