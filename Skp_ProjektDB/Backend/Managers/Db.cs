@@ -14,6 +14,8 @@ namespace Skp_ProjektDB.Backend.Managers
         private SqlCommunication _sqlCommands = new SqlCommunication();
         private Security security = new Security();
         private Message message = new Message();
+        private TimeSpan timeLogOut = new TimeSpan(1, 0, 0);
+
 
         #region vv Team CRUD Methods vv
 
@@ -186,6 +188,45 @@ namespace Skp_ProjektDB.Backend.Managers
         }
 
         #endregion
+
+        #region LogInAndOutAuthentication
+
+        public void UserLogIn(string userName)
+        {
+            _sqlCommands.LoginAuthentication(_dbConnection.GetConnection(), userName);
+        }
+
+        public void UserLogOut(string userName)
+        {
+            _sqlCommands.LogoutAuthentication(_dbConnection.GetConnection(), userName);
+        }
+
+        public bool IsUserLogedIn(string userName)
+        {
+            DataSet data = _sqlCommands.LastLoginTime(_dbConnection.GetConnection(), userName);
+            
+            if (DateTime.Now - ((DateTime)data.Tables[0].Rows[0].ItemArray[0]) < timeLogOut)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+        public bool IsUserLogedOut(string userName)
+        {
+            DateTime logOutDate = (DateTime)_sqlCommands.LastLogoutTime(_dbConnection.GetConnection(), userName).Tables[0].Rows[0].ItemArray[0];
+
+            if (DateTime.Now - logOutDate > timeLogOut)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+        #endregion
+
 
         public void SetConnection(string connectionString)
         {

@@ -25,6 +25,8 @@ namespace Skp_ProjektDB.Controllers
         // login needs to handle failed logins
         public IActionResult UserLogin(string loginName, string password)
         {
+            var iden = User.Identity.Name;
+
             if (loginName == null)
                 return BadRequest("Login oplysningerne var ikke korrekt");
             else
@@ -42,10 +44,16 @@ namespace Skp_ProjektDB.Controllers
                         // gets the user who logged in
                         logedInUser = db.GetUser(loginName);
                         logedInUser = db.GetUserRoles(logedInUser);
+                        db.UserLogIn(logedInUser.Login);
+
                         if (logedInUser.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
+                        {
                             return Redirect("/Project/ProjectOverView");
+                        }
                         else
+                        {
                             return Redirect("/User/UserOverView");
+                        }
                     }
                     else
                     {
@@ -90,7 +98,7 @@ namespace Skp_ProjektDB.Controllers
             if (userName != null)
             {
                 user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
-                
+
                 var projects = db.GetAllProjects();
                 foreach (var item in projects)
                 {
@@ -174,8 +182,8 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult CreateUser(User user)
         {
-            if (logedInUser != null)
-            {
+            //if (logedInUser != null)
+            //{
                 if (user.Name == null)
                 {
                     user.Admin = true;
@@ -199,38 +207,32 @@ namespace Skp_ProjektDB.Controllers
                     db.CreateUser(user);
                     return Redirect("/User/UserOverView");
                 }
-            }
-            else
-                return BadRequest("Du er ikke logget ind");
+
+            //}
+            //else
+            //    return BadRequest("Du er ikke logget ind");
         }
 
-        [HttpGet]
+        //
+        //Change the way Delete An update works 
+        //Return list with all users and buttons to delete and update 
+        //
+
+
         /// <summary>
         /// This is used to delete users from Db
         /// </summary>
         /// <returns></returns>
-        public IActionResult DeleteUser(User user)
+        public void DeleteUser(string userName)
         {
             if (logedInUser != null)
             {
-                user.Admin = true;
-                return View(user);
+
             }
-            else
-                return BadRequest("Du er ikke logget ind");
+            Redirect("/User/UserOverView");
         }
 
-        [HttpPost]
-        public IActionResult DeleteUser(string username)
-        {
-            if (logedInUser != null)
-            {
-                db.DeleteUser(db.GetUser(username));
-                return Redirect("/User/UserOverView");
-            }
-            else
-                return BadRequest("Du er ikke loget ind");
-        }
+
 
         public IActionResult AddRoleToUser(string userName, string role)
         {
@@ -260,9 +262,9 @@ namespace Skp_ProjektDB.Controllers
                 return BadRequest("Du er ikke logget ind");
         }
 
-        public IActionResult RemoveRoleFromUser() 
+        public IActionResult RemoveRoleFromUser()
         {
-            return View();   
+            return View();
         }
     }
 }

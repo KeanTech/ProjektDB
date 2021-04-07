@@ -415,7 +415,9 @@ namespace Skp_ProjektDB.Backend.Db
             SqlCommand command = new SqlCommand("LoginAuthentication", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
+            connection.Open();
             command.ExecuteNonQuery();
+            connection.Close();
         }
 
         public void LogoutAuthentication(SqlConnection connection, string username)
@@ -423,7 +425,9 @@ namespace Skp_ProjektDB.Backend.Db
             SqlCommand command = new SqlCommand("LogoutAuthentication", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
+            connection.Open();
             command.ExecuteNonQuery();
+            connection.Close();
         }
         
         public DataSet LastLoginTime(SqlConnection connection, string username)
