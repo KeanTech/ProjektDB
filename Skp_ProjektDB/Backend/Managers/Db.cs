@@ -144,7 +144,7 @@ namespace Skp_ProjektDB.Backend.Managers
         {
             DataSet data = _sqlCommands.GetUser(username, _dbConnection.GetConnection());
             DataRow userRow = data.Tables[0].Rows[0];
-            User user = new User() { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() };
+            User user = new User() { Id = Convert.ToInt32(userRow.ItemArray[0]), Name = userRow.ItemArray[1].ToString(), Competence = userRow.ItemArray[2].ToString(), Login = userRow.ItemArray[3].ToString() };
             // fill userRow data into user. (need to know the data placement)
             return user;
         }
@@ -159,7 +159,7 @@ namespace Skp_ProjektDB.Backend.Managers
             foreach (DataRow userRow in userRows)
             {
                 // fill user with correct data (need to know data placement)
-                User user = new User() { Name = userRow.ItemArray[0].ToString(), Competence = userRow.ItemArray[1].ToString(), Login = userRow.ItemArray[2].ToString() };
+                User user = new User() { Id = Convert.ToInt32(userRow.ItemArray[0]), Name = userRow.ItemArray[1].ToString(), Competence = userRow.ItemArray[2].ToString(), Login = userRow.ItemArray[3].ToString() };
                 users.Add(user);
             }
 

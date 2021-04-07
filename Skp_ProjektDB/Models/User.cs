@@ -37,6 +37,7 @@ namespace Skp_ProjektDB.Models
         public List<Roles> UserRoles { get; set; }
 
         //This is for view only dont add this to db (User is part of Project)
+        public int Id { get; set; }
         [DisplayName("Projekter")]
         public List<Project> Projects { get; set; }
         public bool Admin { get; set; }

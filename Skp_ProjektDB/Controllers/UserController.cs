@@ -19,7 +19,7 @@ namespace Skp_ProjektDB.Controllers
         public UserController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            db.SetConnection(configuration.GetConnectionString("SkpDb"));
+            db.SetConnection(configuration.GetConnectionString("Test"));
         }
 
         // login needs to handle failed logins
@@ -139,22 +139,13 @@ namespace Skp_ProjektDB.Controllers
         }
 
         //------------------------------------------------------------ vv CRUD Views vv
-
-        /// <summary>
-        /// This is used to get user from Db
-        /// </summary>
-        /// <returns></returns>
-        public User ReadUser(string username)
-        {
-            return db.GetUser(username);
-        }
-
         /// <summary>
         /// This is used to update user data
         /// </summary>
         /// <returns></returns>
         public IActionResult UpdateUser(string userName)
         {
+            //This method will only be available to Admin or the user that owns the account 
             var users = db.GetAllUsers();
             if (logedInUser != null)
             {
@@ -271,9 +262,9 @@ namespace Skp_ProjektDB.Controllers
                 return BadRequest("Du er ikke logget ind");
         }
 
-        public void RemoveRoleFromUser() 
+        public IActionResult RemoveRoleFromUser() 
         {
-
+            return View();   
         }
     }
 }

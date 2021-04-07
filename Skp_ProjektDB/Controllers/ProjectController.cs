@@ -18,7 +18,7 @@ namespace Skp_ProjektDB.Controllers
         public ProjectController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            db.SetConnection(configuration.GetConnectionString("SkpDb"));
+            db.SetConnection(configuration.GetConnectionString("Test"));
         }
 
         /// <summary>

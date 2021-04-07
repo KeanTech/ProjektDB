@@ -377,9 +377,9 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
-<<<<<<< HEAD
+
         #endregion
-=======
+
         
         public DataSet ViewUserByID(SqlConnection connection, int userId)
         {
@@ -394,6 +394,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void LoginAuthentication(SqlConnection connection, string username)
         {
             SqlCommand command = new SqlCommand("LoginAuthentication", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
             command.ExecuteNonQuery();
         }
@@ -425,6 +426,6 @@ namespace Skp_ProjektDB.Backend.Db
             return data;
         }
 
->>>>>>> bb6eb1c4def255362b2a34bbcaf18567d07ec1f6
+
     }
 }
