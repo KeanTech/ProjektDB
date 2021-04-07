@@ -90,8 +90,7 @@ namespace Skp_ProjektDB.Controllers
             if (userName != null)
             {
                 user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
-                user = db.GetUserRoles(user);
-
+                
                 var projects = db.GetAllProjects();
                 foreach (var item in projects)
                 {
@@ -156,17 +155,16 @@ namespace Skp_ProjektDB.Controllers
                         userInList.Owner = 1;
                         return View(userInList);
                     }
-                    else
+                    else if (userName == userInList.Login)
                     {
                         return View(db.GetUser(userName));
                     }
                 }
-                return View();
+                return BadRequest("Fandt ikke noget!");
             }
             else
                 return BadRequest("Du er ikke logget ind");
         }
-
 
         //-------------------------------------------------------------- vv Admin only views vv
 

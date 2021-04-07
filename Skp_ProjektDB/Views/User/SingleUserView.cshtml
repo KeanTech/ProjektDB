@@ -54,6 +54,23 @@
                             </div>
 
                         </li>
+
+                        <li class="list-group-item list-group-item-info">
+                            <div class="list-group">
+                                <form asp-action="DeleteUser">
+
+                                    <input class="btn btn-danger" type="submit" value="Fjern" />
+                                    <input type="text" value="@Model.Login" name="userName" hidden />
+                                
+                                </form>
+                                <form asp-action="UpdateUser">
+                                
+                                    <input class="btn btn-success mt-1" type="submit" value="Rediger"/>
+                                    <input type="text" value="@Model.Login" name="userName" hidden />
+                                
+                                </form>
+                            </div>
+                        </li>
                     </ul>
 
                 </dd>

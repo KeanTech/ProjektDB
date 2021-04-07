@@ -1,13 +1,15 @@
+--------------- Change name if needed 
 Use SkpOpgWeb
 Go
 
 ------------------Create Tables
 Create TABLE Users(
+ID int identity(1,1),
 Name varchar(50) NOT NULL,
 Competence varchar(250),
 Login varchar(20) primary key,
-Salt VARCHAR(MAX) NOT NULL,
-Hash VARCHAR(MAX) NOT NULL
+Salt varchar(Max) NOT NULL,
+Hash varchar(Max) NOT NULL
 )
 Go
 
@@ -28,6 +30,14 @@ ProjectLeader varchar(20) FOREIGN KEY REFERENCES Users(Login) NOT NULL
 )
 Go
 
+Create table Customers(
+CustomerID int primary key identity(1,1),
+ID int NOT NULL FOREIGN KEY REFERENCES Projects(ID),
+Name varchar (20),
+Email varchar(30)
+) 
+Go
+
 --Table of members that are working on every project.
 Create table Teams(
 ID int NOT NULL FOREIGN KEY REFERENCES Projects(ID),
@@ -40,7 +50,7 @@ Create Table Logs(
 LogID int primary key identity(1,1),
 ID int NOT NULL FOREIGN KEY REFERENCES Projects(ID),
 Log varchar (250),
-Username varchar(20) NOT NULL FOREIGN KEY REFERENCES Users(Login),
+Username varchar(20) NOT NULL,
 Date dateTime
 )
 Go
@@ -52,40 +62,61 @@ CREATE PROC CreateUser
 @Name varchar(50),
 @Competence varchar(250),
 @Login varchar(20),
-@Salt varchar(max), 
-@Hash varchar(max)
+@Salt varchar(Max), 
+@Hash varchar(Max)
 AS
 	Insert into Users 
 	VALUES(@Name, @Competence, @Login, @Salt, @Hash)
 Go
 
+CREATE PROC GetUserID
+@Login varchar(50)
+AS
+	Select ID From Users
+	Where Login = @Login
+Go
+
 --View all Users in database
 CREATE PROC ViewAllUsers
 AS 
-	SELECT Name, Competence, Login From Users
+	SELECT ID, Name, Competence, Login From Users
 Go
 
 --View User by username
 CREATE PROC ViewUserByUsername
 @Login varchar(20)
 AS 
-	SELECT Name, Competence, Login From Users
+	SELECT ID, Name, Competence, Login From Users
 	Where Login = @Login
+Go
+
+--View User by ID
+CREATE PROC ViewUserByID
+@ID int
+AS 
+	SELECT ID, Name, Competence, Login From Users
+	Where ID = @ID
 Go
 
 --Delete User by Username
 CREATE PROC DeleteUser
 @Username varchar(20)
 AS
-	DELETE FROM Projects
-	WHERE Projects.ID = @Username
+	Delete From Roles
+	Where Username = @Username;
+
+	Delete from Teams
+	Where Teams.Username = @Username
+
+	DELETE FROM Users
+	WHERE Login = @Username
 Go
 
 --Update User
 CREATE PROC UpdateUser
 @Username varchar(20),
-@Hash varchar(max),
-@Salt varchar(max),
+@Hash varchar(Max),
+@Salt varchar(Max),
 @Name varchar(50),
 @Competence varchar(20)
 AS
@@ -102,8 +133,8 @@ Go
 --Change password on User
 CREATE PROC ChangePassword
 @Login varchar(20),
-@Hash varbinary(20),
-@Salt varbinary(20)
+@Hash varchar(Max),
+@Salt varchar(Max)
 AS
 	Update Users
 	SET
@@ -247,6 +278,9 @@ Go
 CREATE PROC DeleteProject
 @ID int
 AS
+	DELETE FROM Customers
+	WHERE ID = @ID
+	
 	DELETE FROM Logs
 	WHERE ID = @ID
 
@@ -341,4 +375,118 @@ AS
 	WHERE ID = @ID
 	ORDER BY LogID Desc
 Go
+-----------------------
 
+------------------------Customers procs
+--Add customer to project
+Create proc AddCustomerToProject
+@ID int, 
+@Name varchar(20),
+@Email varchar(30)
+AS
+Insert into Customers
+VALUES(@ID, @Name, @Email)
+GO
+
+Create proc EditCustomer
+@CustomerID int,
+@Name varchar(20),
+@Email varchar(30)
+AS
+	Update Customers
+	SET
+	Name = @Name,
+	Email = @Email
+	Where Customers.CustomerID = @CustomerID
+Go
+
+
+Create proc DeleteCustomer
+@CustomerID int
+AS
+Delete Customers
+Where CustomerID = @CustomerID
+GO
+
+Create proc ViewAllCustomers
+AS
+Select Name, Email from Customers
+Go
+
+Create proc ViewAllCustomersOnProject
+@ID int
+AS
+Select Name, Email from Customers
+Where ID = @ID
+GO
+
+Create proc ViewCustomersProjects
+@CustomerID int
+AS
+Select ID from Customers
+Where CustomerID = @CustomerID
+Go
+
+CREATE TABLE Logins (
+    Username varchar(50),
+    Date DateTime
+);
+Go
+
+CREATE TABLE Logouts (
+    Username varchar(50),
+    Date DateTime
+);
+Go
+
+Create Proc LoginAuthentication
+@Username varchar(50)
+AS
+IF EXISTS (SELECT * FROM Logins WHERE Username = @Username)
+BEGIN
+    Update Logins
+	Set
+	Date = GETDATE()
+	WHERE Username = @Username
+END
+
+ELSE
+
+BEGIN
+Insert into Logins
+VALUES(@Username, GETDATE())
+END
+Go
+
+Create Proc LogoutAuthentication
+@Username varchar(50)
+AS
+IF EXISTS (SELECT * FROM Logouts WHERE Username = @Username)
+BEGIN
+    Update Logouts
+	Set
+	Date = GETDATE()
+	WHERE Username = @Username
+END
+
+ELSE
+
+BEGIN
+Insert into Logouts
+VALUES(@Username, GETDATE())
+END
+Go
+
+Create proc LastLoginTime
+@Username varchar(50)
+AS
+Select Date from Logins
+WHERE Username = @Username
+Go
+
+Create proc LastLogoutTime
+@Username varchar(50)
+AS
+Select Date from Logouts
+WHERE Username = @Username
+Go

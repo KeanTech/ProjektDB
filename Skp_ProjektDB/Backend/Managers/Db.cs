@@ -41,7 +41,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
         #endregion
 
-        #region --------------------------------------------------------------------------------------------------- vv Project CRUD Methods vv 
+        #region ------------------------------------------------------------------- vv Project CRUD Methods vv 
 
         public void CreateProject(Project project)
         {
@@ -94,7 +94,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
         #endregion --------------------------------------------------------------------------------------------------- ^^ Project CRUD Methods ^^
 
-        #region --------------------------------------------------------------------------------------------------- vv User CRUD Methods vv
+        #region -------------------------------------------------------------- vv User CRUD Methods vv
         public string GetSalt(string username)
         {
             DataSet data = _sqlCommands.GetSalt(username, _dbConnection.GetConnection());
@@ -115,24 +115,10 @@ namespace Skp_ProjektDB.Backend.Managers
         public void CreateUser(User user)
         {
             user.Salt = security.GenerateSalt();
-            //Random random = new Random();
             string pass = "Kode1234";
-            //for (int i = 0; i < 8; i++)
-            //{
-            //    pass += random.Next(0, 10);
-            //}
-
             string encrypted = security.Encrypt(Encoding.UTF8.GetBytes(pass), Convert.FromBase64String(user.Salt));
             user.Hash = security.Hash(Convert.FromBase64String(encrypted));
             _sqlCommands.CreateUser(_dbConnection.GetConnection(), user);
-
-            // send email
-
-            //Thread t =
-            //    new Thread(() => message.SendMessage(Messages.Mediatype.Email, "Dit login er: " + user.Login + "\n Dit password er: " + pass + " HUSK at ændre det",
-            //    user.Login + @"@zbc.dk"));
-            //t.Start();
-
         }
 
         public void DeleteUser(User user)
@@ -145,7 +131,6 @@ namespace Skp_ProjektDB.Backend.Managers
             DataSet data = _sqlCommands.GetUser(username, _dbConnection.GetConnection());
             DataRow userRow = data.Tables[0].Rows[0];
             User user = new User() { Id = Convert.ToInt32(userRow.ItemArray[0]), Name = userRow.ItemArray[1].ToString(), Competence = userRow.ItemArray[2].ToString(), Login = userRow.ItemArray[3].ToString() };
-            // fill userRow data into user. (need to know the data placement)
             return user;
         }
 
@@ -160,9 +145,9 @@ namespace Skp_ProjektDB.Backend.Managers
             {
                 // fill user with correct data (need to know data placement)
                 User user = new User() { Id = Convert.ToInt32(userRow.ItemArray[0]), Name = userRow.ItemArray[1].ToString(), Competence = userRow.ItemArray[2].ToString(), Login = userRow.ItemArray[3].ToString() };
+                GetUserRoles(user);
                 users.Add(user);
             }
-
             return users;
         }
 
