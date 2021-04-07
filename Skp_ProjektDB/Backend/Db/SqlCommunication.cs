@@ -1,4 +1,4 @@
-﻿using Skp_ProjektDB.Models;
+using Skp_ProjektDB.Models;
 using Skp_ProjektDB.Types;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Skp_ProjektDB.Backend.Db
             else
                 return userName.Split('@')[0];
         }
-        
+
         //------------------------------------------------------------------------- User Methods
 
         #region User Crud Methods
@@ -68,6 +68,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void UpdateUser(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("UpdateUser", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", user.Login);
             command.Parameters.AddWithValue("Hash", user.Hash);
             command.Parameters.AddWithValue("Salt", user.Salt);
@@ -80,6 +81,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void ChangePassword(SqlConnection connection, User user)
         {
             SqlCommand command = new SqlCommand("UpdateUser", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", user.Login);
             command.Parameters.AddWithValue("Hash", user.Hash);
             command.Parameters.AddWithValue("Salt", user.Salt);
@@ -153,6 +155,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void RemoveRoleFromUser(SqlConnection connection, string username, string role)
         {
             SqlCommand command = new SqlCommand("RemoveRoleFromUser", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("UserName", username);
             command.Parameters.AddWithValue("Role", role);
             command.ExecuteNonQuery();
@@ -161,6 +164,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void UpdateRole(SqlConnection connection, string username, string oldRole, string newRole)
         {
             SqlCommand command = new SqlCommand("UpdateRole", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("UserName", username);
             command.Parameters.AddWithValue("OldRole", oldRole);
             command.Parameters.AddWithValue("NewRole", newRole);
@@ -197,6 +201,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewProject", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", projectID);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -208,6 +213,7 @@ namespace Skp_ProjektDB.Backend.Db
             DataSet data = new DataSet();
             //Select * FROM Projects WHERE Status = 'Aktiv'
             SqlCommand command = new SqlCommand("ViewActiveProjects", connection);
+            command.CommandType = CommandType.StoredProcedure;
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
             return data;
@@ -216,6 +222,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void UpdateProject(SqlConnection connection, ProjectModel project)
         {
             SqlCommand command = new SqlCommand("UpdateProject", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Status", project.Id);
             command.Parameters.AddWithValue("Status", project.Status);
             command.Parameters.AddWithValue("Title", project.Title);
@@ -229,7 +236,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void DeleteProject(SqlConnection connection, int projectId)
         {
             SqlCommand command = new SqlCommand("DeleteProject", connection);
-            command.Parameters.AddWithValue("Status", projectId);
+            command.Parameters.AddWithValue("ID", projectId);
             command.ExecuteNonQuery();
         }
 
@@ -279,6 +286,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void AddLogToProject(SqlConnection connection, Project project, string username)
         {
             SqlCommand command = new SqlCommand("AddLogToProject", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", project.Id);
             command.Parameters.AddWithValue("Log", project.Log); //GETDATE() in database on log
             command.Parameters.AddWithValue("Username", username);
@@ -288,6 +296,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void EditLog(SqlConnection connection, int logID, string log, string username)
         {
             SqlCommand command = new SqlCommand("EditLog", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("LogID", logID);
             command.Parameters.AddWithValue("Log", log); //GETDATE() in database on log
             command.Parameters.AddWithValue("Username", username);
@@ -297,6 +306,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void DeleteLog(SqlConnection connection, int logID)
         {
             SqlCommand command = new SqlCommand("DeleteLog", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("LogID", logID);
             command.ExecuteNonQuery();
         }
@@ -305,6 +315,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewLastLogFromTeam", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", projectId);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -315,6 +326,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewAllLogsFromTeam", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", projectId);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -328,6 +340,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void AddCustomerToProject(SqlConnection connection, int projectId, string name, string email)
         {
             SqlCommand command = new SqlCommand("AddCustomerToProject", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", projectId);
             command.Parameters.AddWithValue("Name", name);
             command.Parameters.AddWithValue("Email", email);
@@ -337,6 +350,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void EditCustomer(SqlConnection connection, int customerId, string name, string email)
         {
             SqlCommand command = new SqlCommand("EditCustomer", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("CustomerID", customerId);
             command.Parameters.AddWithValue("Name", name);
             command.Parameters.AddWithValue("Email", email);
@@ -346,6 +360,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void DeleteCustomer(SqlConnection connection, int customerId)
         {
             SqlCommand command = new SqlCommand("DeleteCustomer", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("CustomerID", customerId);
             command.ExecuteNonQuery();
         }
@@ -354,6 +369,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewAllCustomers", connection);
+            command.CommandType = CommandType.StoredProcedure;
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
             return data;
@@ -362,6 +378,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewAllCustomersOnProject", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", projectId);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -372,6 +389,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewCustomersProjects", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("CustomerID", customerId);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -385,6 +403,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewUserByID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("ID", userId);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -402,6 +421,7 @@ namespace Skp_ProjektDB.Backend.Db
         public void LogoutAuthentication(SqlConnection connection, string username)
         {
             SqlCommand command = new SqlCommand("LogoutAuthentication", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
             command.ExecuteNonQuery();
         }
@@ -410,6 +430,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("LastLoginTime", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
@@ -420,6 +441,7 @@ namespace Skp_ProjektDB.Backend.Db
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("LastLogoutTime", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
