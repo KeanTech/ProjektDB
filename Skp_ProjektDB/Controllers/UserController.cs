@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Skp_ProjektDB.Models;
 using Skp_ProjektDB.Types;
@@ -23,6 +24,7 @@ namespace Skp_ProjektDB.Controllers
         }
 
         // login needs to handle failed logins
+        
         public IActionResult UserLogin(string loginName, string password)
         {
             var iden = User.Identity.Name;
@@ -42,7 +44,7 @@ namespace Skp_ProjektDB.Controllers
                     if (hash == db.GetHash(loginName)) // if hashes matches == password is correct
                     {
                         // gets the user who logged in
-                        logedInUser = db.GetUser(loginName);
+                        logedInUser = db.GetUserByUserName(loginName);
                         logedInUser = db.GetUserRoles(logedInUser);
                         db.UserLogIn(logedInUser.Login);
 
@@ -92,19 +94,18 @@ namespace Skp_ProjektDB.Controllers
                 return BadRequest("Du er ikke logget ind");
         }
 
-        public IActionResult SingleUserView(string userName)
+        public IActionResult SingleUserView(int userID)
         {
             User user = null;
-            if (userName != null)
+            if (userID != 0)
             {
-                user = db.GetAllUsers().Where(x => x.Login == userName).FirstOrDefault();
+                user = db.GetAllUsers().Where(x => x.Id == userID).FirstOrDefault();
 
                 var projects = db.GetAllProjects();
                 foreach (var item in projects)
                 {
                     item.Team = db.GetTeam(item.Id);
                 }
-
             }
 
             if (logedInUser != null && !string.IsNullOrEmpty(logedInUser.Login))
@@ -150,7 +151,7 @@ namespace Skp_ProjektDB.Controllers
         /// This is used to update user data
         /// </summary>
         /// <returns></returns>
-        public IActionResult UpdateUser(string userName)
+        public IActionResult UpdateUser(int userID)
         {
             //This method will only be available to Admin or the user that owns the account 
             var users = db.GetAllUsers();
@@ -158,14 +159,14 @@ namespace Skp_ProjektDB.Controllers
             {
                 foreach (var userInList in users)
                 {
-                    if (userInList.Login == userName)
+                    if (userInList.Id == userID)
                     {
                         userInList.Owner = 1;
                         return View(userInList);
                     }
-                    else if (userName == userInList.Login)
+                    else if (userID == userInList.Id)
                     {
-                        return View(db.GetUser(userName));
+                        return View(db.GetUserById(userID));
                     }
                 }
                 return BadRequest("Fandt ikke noget!");
@@ -218,27 +219,25 @@ namespace Skp_ProjektDB.Controllers
         //Return list with all users and buttons to delete and update 
         //
 
-
         /// <summary>
         /// This is used to delete users from Db
         /// </summary>
         /// <returns></returns>
-        public void DeleteUser(string userName)
+        public void DeleteUser(int userID)
         {
-            if (logedInUser != null)
-            {
-
-            }
-            Redirect("/User/UserOverView");
+            //if (logedInUser != null)
+            //{
+            //    db.DeleteUser();
+            //}
+            //Redirect("/User/UserOverView");
         }
-
 
 
         public IActionResult AddRoleToUser(string userName, string role)
         {
             if (logedInUser != null)
             {
-                User user = db.GetUser(userName);
+                User user = db.GetUserByUserName(userName);
                 user = db.GetUserRoles(user);
                 if (string.IsNullOrEmpty(role))
                 {

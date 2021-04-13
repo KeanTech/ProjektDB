@@ -8,7 +8,6 @@
         Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <!-- This is used for search it takes in a string through input and sends it to UserController via a post method -->
 @using (Html.BeginForm("UserSearch", "User", FormMethod.Post))
 {
@@ -25,7 +24,7 @@
 
                 <div class="list-group-item list-group-item-info">
                     <form asp-action="SingleUserView">
-                        <button class="btn btn-link btn-sm" type="submit" name="userName" value="@Model[i].Login">@Model[i].Name</button>
+                        <button class="btn btn-link btn-sm" type="submit" name="userID" value="@Model[i].Id">@Model[i].Name</button>
                     </form>
                 </div>
                 @if (Model[i].Owner == i || Model[i].Admin == true)
@@ -33,19 +32,18 @@
                     <div class="list-group-item list-group-item-info">
 
                         <form asp-action="UpdateUser">
-                            <button class="btn btn-success btn-sm" type="submit" name="userName" value="@Model[i].Login">Rediger</button>
+                            <button class="btn btn-success btn-sm" type="submit" name="userName" value="@Model[i].Id">Rediger</button>
                         </form>
 
                     </div>
                 }
-
 
                 @if (Model[i].Admin == true)
                 {
                     <div class="list-group-item list-group-item-info">
 
                         <form asp-action="DeleteUser">
-                            <button class="btn btn-danger btn-sm" type="submit" name="userName" value="@Model[i].Login">Fjern</button>
+                            <button class="btn btn-danger btn-sm" type="submit" name="userName" value="@Model[i].Id">Fjern</button>
                         </form>
 
                     </div>

@@ -35,13 +35,14 @@
                     <input asp-for="Login" value="@Model.Login" class="form-control" disabled />
                     <span asp-validation-for="Login" class="text-danger"></span>
                 </div>
+
                 <h6>Er du sikker på du vil fjerne denne bruger ?</h6>
                 <form asp-action="DeleteUser">
                     <div class="form-group">
                         <input type="submit" value="Fjern" class="btn btn-danger" /> |
                         <a asp-action="UserOverView">Fortryd</a>
                     </div>
-                    <input name="username" type="text" value="@Model.Login" hidden />
+                    <input name="userId" type="text" value="@Model.Id" hidden />
                 </form>
             </div>
 

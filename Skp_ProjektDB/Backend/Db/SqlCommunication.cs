@@ -44,12 +44,23 @@ namespace Skp_ProjektDB.Backend.Db
             return data;
         }
 
-        public DataSet GetUser(string username, SqlConnection connection)
+        public DataSet GetUserFromUserName(string userName, SqlConnection connection)
         {
             DataSet data = new DataSet();
             SqlCommand command = new SqlCommand("ViewUserByUsername", connection);
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("Login", CheckUserName(username));
+            command.Parameters.AddWithValue("Login", userName);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
+        public DataSet GetUserFromId(int userID, SqlConnection connection)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("ViewUserByID", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("ID", userID);
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(data);
             return data;

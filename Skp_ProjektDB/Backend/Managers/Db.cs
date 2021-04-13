@@ -31,7 +31,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
             foreach (DataRow row in data.Tables[0].Rows)
             {
-                teamNames.Add(GetUser(row.ItemArray[0].ToString()));
+                teamNames.Add(GetUserById(Convert.ToInt32(row.ItemArray[0])));
             }
             return teamNames;
         }
@@ -128,9 +128,17 @@ namespace Skp_ProjektDB.Backend.Managers
             _sqlCommands.DeleteUser(_dbConnection.GetConnection(), user.Login);
         }
 
-        public User GetUser(string username)
+        public User GetUserByUserName(string userName)
         {
-            DataSet data = _sqlCommands.GetUser(username, _dbConnection.GetConnection());
+            DataSet data = _sqlCommands.GetUserFromUserName(userName, _dbConnection.GetConnection());
+            DataRow userRow = data.Tables[0].Rows[0];
+            User user = new User() { Id = Convert.ToInt32(userRow.ItemArray[0]), Name = userRow.ItemArray[1].ToString(), Competence = userRow.ItemArray[2].ToString(), Login = userRow.ItemArray[3].ToString() };
+            return user;
+        }
+
+        public User GetUserById(int userID)
+        {
+            DataSet data = _sqlCommands.GetUserFromId(userID, _dbConnection.GetConnection());
             DataRow userRow = data.Tables[0].Rows[0];
             User user = new User() { Id = Convert.ToInt32(userRow.ItemArray[0]), Name = userRow.ItemArray[1].ToString(), Competence = userRow.ItemArray[2].ToString(), Login = userRow.ItemArray[3].ToString() };
             return user;
@@ -205,6 +213,7 @@ namespace Skp_ProjektDB.Backend.Managers
         {
             DataSet data = _sqlCommands.LastLoginTime(_dbConnection.GetConnection(), userName);
             
+
             if (DateTime.Now - ((DateTime)data.Tables[0].Rows[0].ItemArray[0]) < timeLogOut)
             {
                 return true;
@@ -217,7 +226,7 @@ namespace Skp_ProjektDB.Backend.Managers
         {
             DateTime logOutDate = (DateTime)_sqlCommands.LastLogoutTime(_dbConnection.GetConnection(), userName).Tables[0].Rows[0].ItemArray[0];
 
-            if (DateTime.Now - logOutDate > timeLogOut)
+            if(DateTime.Now - logOutDate > timeLogOut)
             {
                 return true;
             }
