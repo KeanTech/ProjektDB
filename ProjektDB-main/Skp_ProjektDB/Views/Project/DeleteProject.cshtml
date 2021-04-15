@@ -1,0 +1,60 @@
+﻿@model Skp_ProjektDB.Models.Project
+
+@{
+    ViewData["Title"] = "DeleteProject";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="list-group-item bg-dark border-0">
+    <div class="row justify-content-center">
+
+        <div class="col-md-4 list-group-item-info ">
+            <h1>Slet Projekt</h1>
+            <hr />
+            <form asp-action="DeleteProject">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate" class="control-label"></label>
+                    <input asp-for="EndDate" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label"></label>
+                    <select asp-for="Status" class="form-control">
+                        <option value="Aktiv">Aktiv</option>
+                        <option value="Inaktiv">Inaktiv</option>
+                        <option value="Afsluttet">Afsluttet</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <input type="submit" value="Slet" class="btn btn-danger" /> |
+                    <a asp-action="UserOverView">Fortryd</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
