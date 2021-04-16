@@ -10,6 +10,9 @@ namespace Skp_ProjektDB.Backend.Db
 {
     internal class SqlCommunication
     {
+
+        //Test test test
+
         public string CheckUserName(string userName)
         {
             if (userName.Split('@').Length < 2)
