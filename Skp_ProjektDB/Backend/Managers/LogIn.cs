@@ -19,17 +19,17 @@ namespace Skp_ProjektDB.Backend.Managers
         public bool LogedIn { get; set; }
         public string Identity { get; set; }
 
-        void ILogIn.LogIn(User user)
+        void ILogIn.LogIn(User user, string identity)
         {
             UserID = user.Id;
             LogedIn = true;
-            db.UserLogIn(user.Login);
+            db.UserLogIn(user.Login, identity);
         }
 
-        public void LogOut(User user)
+        public void LogOut(User user, string Identity)
         {
             LogedIn = false;
-            db.UserLogOut(user.Login);            
+            db.UserLogOut(user.Login, Identity);            
         }
 
         //Remember to test the login, so that a user only can be logged in on one device at a time 

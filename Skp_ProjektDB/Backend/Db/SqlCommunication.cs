@@ -294,12 +294,12 @@ namespace Skp_ProjektDB.Backend.Db
         //------------------------------------------------------------------------- Team Methods
 
         #region Log Crud Methods
-        public void AddLogToProject(SqlConnection connection, Project project, string username)
+        public void AddLogToProject(SqlConnection connection, int projectId, string logString, string username)
         {
             SqlCommand command = new SqlCommand("AddLogToProject", connection);
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("ID", project.Id);
-            command.Parameters.AddWithValue("Log", project.Log); //GETDATE() in database on log
+            command.Parameters.AddWithValue("ID", projectId);
+            command.Parameters.AddWithValue("Log", logString); //GETDATE() in database on log
             command.Parameters.AddWithValue("Username", username);
             command.ExecuteNonQuery();
         }
@@ -343,6 +343,18 @@ namespace Skp_ProjektDB.Backend.Db
             da.Fill(data);
             return data;
         }
+
+        public DataSet ViewLogWithID(SqlConnection connection, int logId)
+        {
+            DataSet data = new DataSet();
+            SqlCommand command = new SqlCommand("ViewLogWithID", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("logID", logId);
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(data);
+            return data;
+        }
+
         #endregion
 
         //------------------------------------------------------------------------- Costumer Methods
@@ -421,21 +433,23 @@ namespace Skp_ProjektDB.Backend.Db
             return data;
         }
 
-        public void LoginAuthentication(SqlConnection connection, string username)
+        public void LoginAuthentication(SqlConnection connection, string username, string winIdentity)
         {
             SqlCommand command = new SqlCommand("LoginAuthentication", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
+            command.Parameters.AddWithValue("WinIdentity", winIdentity);
             connection.Open();
             command.ExecuteNonQuery();
             connection.Close();
         }
 
-        public void LogoutAuthentication(SqlConnection connection, string username)
+        public void LogoutAuthentication(SqlConnection connection, string username, string winIdentity)
         {
             SqlCommand command = new SqlCommand("LogoutAuthentication", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);
+            command.Parameters.AddWithValue("WinIdentity", winIdentity);
             connection.Open();
             command.ExecuteNonQuery();
             connection.Close();

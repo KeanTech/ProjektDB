@@ -8,7 +8,7 @@ namespace Skp_ProjektDB.Backend.Interfaces
 {
     interface ILogIn
     {
-        void LogIn(User user);
-        void LogOut(User user);
+        void LogIn(User user, string identity);
+        void LogOut(User user, string identity);
     }
 }

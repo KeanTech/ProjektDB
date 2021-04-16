@@ -199,14 +199,14 @@ namespace Skp_ProjektDB.Backend.Managers
 
         #region LogInAndOutAuthentication
 
-        public void UserLogIn(string userName)
+        public void UserLogIn(string userName, string winIdentity)
         {
-            _sqlCommands.LoginAuthentication(_dbConnection.GetConnection(), userName);
+            _sqlCommands.LoginAuthentication(_dbConnection.GetConnection(), userName, winIdentity);
         }
 
-        public void UserLogOut(string userName)
+        public void UserLogOut(string userName, string winIdentity)
         {
-            _sqlCommands.LogoutAuthentication(_dbConnection.GetConnection(), userName);
+            _sqlCommands.LogoutAuthentication(_dbConnection.GetConnection(), userName, winIdentity);
         }
 
         public bool IsUserLogedIn(string userName)
@@ -236,6 +236,34 @@ namespace Skp_ProjektDB.Backend.Managers
 
         #endregion
 
+        //Log vv
+        public void AddLogToProject(int projectId, string logString, string username)
+        {
+            _sqlCommands.AddLogToProject(_dbConnection.GetConnection(), projectId, logString, username);
+        }
+        public void UpdateLog(int projectId, string logString, string username)
+        {
+            _sqlCommands.EditLog(_dbConnection.GetConnection(), projectId, logString, username);
+        }
+        public void DeleteLog(int logId)
+        {
+            _sqlCommands.DeleteLog(_dbConnection.GetConnection(), logId);
+        }
+
+        public void ViewLastLogFromTeam(int logId)
+        {
+            _sqlCommands.ViewLastLogFromTeam(_dbConnection.GetConnection(), logId);
+        }
+        public void ViewAllLogsFromTeam(int projectId)
+        {
+            _sqlCommands.ViewAllLogsFromTeam(_dbConnection.GetConnection(), projectId);
+        }
+
+        public void ViewLogWithID(int logId)
+        {
+            _sqlCommands.ViewLogWithID(_dbConnection.GetConnection(), logId);
+        }
+        //Log ^^
 
         public void SetConnection(string connectionString)
         {

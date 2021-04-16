@@ -51,22 +51,47 @@ namespace Skp_ProjektDB.Controllers
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns></returns>
+        /// 
+
+        //Log vv
         public IActionResult WriteToLog(int projectId)
         {
             return View(db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault());
         }
 
         [HttpPost]
-        public IActionResult AddToLog(string logString, int projectId)
+        public IActionResult AddToLog(string logString, int projectId, string username)
         {
             //Check authentication
 
-            //Save the log to db
-            //add username to logstring 
+            db.AddLogToProject(projectId, logString, username); 
+
             var project = db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault();
 
             return Redirect("/Project/ProjectOverView");
         }
+        public void UpdateLog(int projectId, string logString, string username)
+        {
+            db.UpdateLog(projectId, logString, username);
+        }
+        public void DeleteLog(int logId)
+        {
+            db.DeleteLog(logId);
+        }
+        public void LastViewLastLogFromTeam(int projectId)
+        {
+            db.ViewLastLogFromTeam(projectId);
+        }
+        public void ViewAllLogsFromTeam(int projectId)
+        {
+            db.ViewAllLogsFromTeam(projectId);
+        }
+
+        public void ViewLogWithID(int logId)
+        {
+            db.ViewLogWithID(logId);
+        }
+        //Log ^^
 
         //----------------------------------------------------Search methods
 
