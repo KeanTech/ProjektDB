@@ -43,10 +43,11 @@ namespace Skp_ProjektDB.Controllers
 
                     if (hash == db.GetHash(loginName)) // if hashes matches == password is correct
                     {
+                        string winIdentity = User.Identity.Name;
                         // gets the user who logged in
                         logedInUser = db.GetUserByUserName(loginName);
                         logedInUser = db.GetUserRoles(logedInUser);
-                        db.UserLogIn(logedInUser.Login);
+                        db.UserLogIn(logedInUser.Login, winIdentity);
 
                         if (logedInUser.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
                         {
