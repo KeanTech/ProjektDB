@@ -99,11 +99,19 @@ namespace Skp_ProjektDB.Backend.Managers
         #region -------------------------------------------------------------- vv User CRUD Methods vv
         public string GetSalt(string username)
         {
-            DataSet data = _sqlCommands.GetSalt(username, _dbConnection.GetConnection());
-            DataRow saltRow = data.Tables[0].Rows[0];
-            string salt = saltRow[0].ToString();
-
-            return salt;
+            try
+            {
+                DataSet data = _sqlCommands.GetSalt(username, _dbConnection.GetConnection());
+                DataRow saltRow = data.Tables[0].Rows[0];
+                string salt = saltRow[0].ToString();
+                return salt;
+            }
+            catch (Exception)
+            {
+                //  Make a log for exceptions
+                throw;
+            }
+            
         }
 
         public string GetHash(string username)

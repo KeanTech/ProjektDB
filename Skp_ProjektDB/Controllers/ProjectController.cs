@@ -15,10 +15,11 @@ namespace Skp_ProjektDB.Controllers
     {
         private readonly IConfiguration configuration;
         private Db db = new Db();
+
         public ProjectController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            db.SetConnection(configuration.GetConnectionString("Test"));
+            db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
 
         /// <summary>

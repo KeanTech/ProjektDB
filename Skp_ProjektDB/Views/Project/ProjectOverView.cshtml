@@ -1,11 +1,14 @@
 ﻿@model List<Skp_ProjektDB.Models.ProjectModel>
 
 @{
-    ViewData["Title"] = "ProjectOverView";
+    ViewData["Title"] = "CreateUser";
+    if (@Model[0].Admin == true)
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    else
+        Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!-- This is used for search it takes in a string through input and sends it to ProjectController via a post method -->
-
 
 <div class="row card-color mt-3">
 
@@ -67,7 +70,6 @@
                         }
                     </dd>
 
-
                 </dl>
             </div>
 
@@ -93,7 +95,6 @@
                                 @if (Model[i].DescriptionCheckbox == true)
                                 {
                                     <th class="text-center" scope="col">Beskrivelse</th>
-
                                 }
 
                                 @if (Model[i].LogCheckbox == true)

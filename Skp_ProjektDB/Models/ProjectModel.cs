@@ -15,6 +15,7 @@ namespace Skp_ProjektDB.Models
             DescriptionCheckbox = true;
         }
 
+        public bool Admin { get; set; }
 
         public List<User> Users { get; set; }
 

@@ -20,7 +20,7 @@ namespace Skp_ProjektDB.Controllers
         public UserController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            db.SetConnection(configuration.GetConnectionString("Test"));
+            db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
 
         // login needs to handle failed logins
