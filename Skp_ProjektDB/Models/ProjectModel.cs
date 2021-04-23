@@ -10,7 +10,7 @@ namespace Skp_ProjektDB.Models
     {
         public ProjectModel()
         {
-            Log = new List<string>();
+            Log = new List<LogModel>();
             NameCheckbox = true;
             DescriptionCheckbox = true;
         }

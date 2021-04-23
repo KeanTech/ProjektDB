@@ -32,6 +32,7 @@ namespace Skp_ProjektDB.Controllers
         {
             var project = db.GetAllProjects().Where(x => x.Title == projectName).FirstOrDefault();
             project.Team = db.GetTeam(project.Id);
+            project.Log = db.ViewAllLogsFromTeam(project.Id);
             foreach (var item in project.Team)
             {
                 db.GetUserRoles(item);

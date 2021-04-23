@@ -22,6 +22,7 @@
             <div class="collapse " id="collapsebox">
                 <dl class="list-group list-group-horizontal">
 
+                    <!-- Search bar -->
                     <dd class="list-group-item list-group-horizontal list-group-item-info">
                         @using (Html.BeginForm("ProjectSearch", "Project", FormMethod.Post))
                         {
@@ -30,14 +31,6 @@
 
                                 <input name="projectName" type="text" placeholder="Søg efter projekt her" />
                                 <input class="btn btn-outline-info bg-dark" type="submit" value="Søg" />
-
-                            </div>
-
-                            <div class="list-group-item list-group-item-info">
-                                <input name="nameCheck" class="form-check-input" type="checkbox" value="true" id="namecheckbox" checked />
-                                <label class="form-check-label" for="namecheckbox">
-                                    Navn
-                                </label>
 
                             </div>
 
@@ -97,7 +90,7 @@
                                     <th class="text-center" scope="col">Beskrivelse</th>
                                 }
 
-                                @if (Model[i].LogCheckbox == true)
+                                @if (Model[i].LogCheckbox == true && Model[i].Log.Count > 0)
                                 {
                                     <th class="text-center" scope="col">Log</th>
 
