@@ -11,15 +11,12 @@ namespace Skp_ProjektDB.Models
         public ProjectModel()
         {
             Log = new List<LogModel>();
-            NameCheckbox = true;
             DescriptionCheckbox = true;
         }
 
         public bool Admin { get; set; }
 
         public List<User> Users { get; set; }
-
-        public bool NameCheckbox { get; set; }
 
         public bool ProjectLeaderCheckbox { get; set; }
 

@@ -108,29 +108,28 @@ namespace Skp_ProjektDB.Controllers
 
         //----------------------------------------------------Search methods
 
-        public IActionResult ProjectSearch(string projectName, bool nameCheck, bool projectleaderCheck, bool descriptionCheck, bool logCheck)
+        public IActionResult ProjectSearch(string projectName, bool projectleaderCheck, bool descriptionCheck, bool logCheck)
         {
             if (projectName != null)
             {
                 List<ProjectModel> searchedProject = db.GetAllProjects().FindAll(x => x.Title.ToLower().Contains(projectName.ToLower()));
-                SortOutSearchCriteria(searchedProject, nameCheck, projectleaderCheck, descriptionCheck, logCheck);
+                SortOutSearchCriteria(searchedProject, projectleaderCheck, descriptionCheck, logCheck);
 
                 if (searchedProject != null)
                     return View("ProjectOverView", searchedProject);
                 else
-                    return View("ProjectOverView", SortOutSearchCriteria(db.GetAllProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
+                    return View("ProjectOverView", SortOutSearchCriteria(db.GetAllProjects(), projectleaderCheck, descriptionCheck, logCheck));
             }
             else
             {
-                return View("ProjectOverView", SortOutSearchCriteria(db.GetAllProjects(), nameCheck, projectleaderCheck, descriptionCheck, logCheck));
+                return View("ProjectOverView", SortOutSearchCriteria(db.GetAllProjects(), projectleaderCheck, descriptionCheck, logCheck));
             }
         }
 
-        private List<ProjectModel> SortOutSearchCriteria(List<ProjectModel> projectModels, bool nameCheck, bool projectleaderCheck, bool descriptionCheck, bool logCheck)
+        private List<ProjectModel> SortOutSearchCriteria(List<ProjectModel> projectModels, bool projectleaderCheck, bool descriptionCheck, bool logCheck)
         {
             foreach (var model in projectModels)
             {
-                model.NameCheckbox = nameCheck;
                 model.ProjectLeaderCheckbox = projectleaderCheck;
                 model.DescriptionCheckbox = descriptionCheck;
                 model.LogCheckbox = logCheck;
