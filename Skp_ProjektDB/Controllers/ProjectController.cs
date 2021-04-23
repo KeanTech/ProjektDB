@@ -16,10 +16,11 @@ namespace Skp_ProjektDB.Controllers
         private readonly IConfiguration configuration;
         private Db db = new Db();
 
+
         public ProjectController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            db.SetConnection(configuration.GetConnectionString("Test"));
+            db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
 
         /// <summary>
@@ -31,6 +32,10 @@ namespace Skp_ProjektDB.Controllers
         {
             var project = db.GetAllProjects().Where(x => x.Title == projectName).FirstOrDefault();
             project.Team = db.GetTeam(project.Id);
+            foreach (var item in project.Team)
+            {
+                db.GetUserRoles(item);
+            }
             return View(project);
         }
 
@@ -73,18 +78,22 @@ namespace Skp_ProjektDB.Controllers
 
             return Redirect("/Project/ProjectOverView");
         }
+
         public void UpdateLog(int projectId, string logString, string username)
         {
             db.UpdateLog(projectId, logString, username);
         }
+
         public void DeleteLog(int logId)
         {
             db.DeleteLog(logId);
         }
-        public void LastViewLastLogFromTeam(int projectId)
+
+        public void ViewLastLogFromTeam(int projectId)
         {
             db.ViewLastLogFromTeam(projectId);
         }
+
         public void ViewAllLogsFromTeam(int projectId)
         {
             db.ViewAllLogsFromTeam(projectId);

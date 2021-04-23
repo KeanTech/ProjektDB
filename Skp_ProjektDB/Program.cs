@@ -21,7 +21,6 @@ namespace Skp_ProjektDB
             //
             //Needs DbContext For Claims
 
-
             //var services = host.Services.CreateScope();
             //var userManager = services.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
@@ -39,7 +38,7 @@ namespace Skp_ProjektDB
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup("Skp_ProjektDB");
                 });
     }
 }

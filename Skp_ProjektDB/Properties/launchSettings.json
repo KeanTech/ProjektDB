@@ -18,6 +18,7 @@
     "Skp_ProjektDB": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
+      "nativeDebugging": true,
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {

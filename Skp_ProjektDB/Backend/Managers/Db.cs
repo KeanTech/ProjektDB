@@ -8,6 +8,7 @@ using System.Text;
 
 namespace Skp_ProjektDB.Backend.Managers
 {
+    // This class is responsible for handling bd connections
     public class Db : IDisposable
     {
         private Connection _dbConnection = new Connection();
@@ -31,7 +32,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
             foreach (DataRow row in data.Tables[0].Rows)
             {
-                teamNames.Add(GetUserById(Convert.ToInt32(row.ItemArray[0])));
+                teamNames.Add(GetUserByUserName(row.ItemArray[0].ToString()));
             }
             return teamNames;
         }
@@ -200,7 +201,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
     public void RemoveRoleFromUser(string userName, User.Roles role)
     {
-        _sqlCommands.RemoveRoleFromUser(_dbConnection.GetConnection(), userName, role.ToString());
+        _sqlCommands.RemoveRoleFromUser(_dbConnection.GetConnection(), userName, role);
     }
 
     #endregion
@@ -260,6 +261,7 @@ namespace Skp_ProjektDB.Backend.Managers
 
     public void ViewLastLogFromTeam(int logId)
     {
+            // needs and object class ?
         _sqlCommands.ViewLastLogFromTeam(_dbConnection.GetConnection(), logId);
     }
     public void ViewAllLogsFromTeam(int projectId)

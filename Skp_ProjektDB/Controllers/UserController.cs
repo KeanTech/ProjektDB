@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Skp_ProjektDB.Backend.Managers;
 using Skp_ProjektDB.Models;
 using Skp_ProjektDB.Types;
 using System;
@@ -15,10 +16,11 @@ namespace Skp_ProjektDB.Controllers
         private readonly IConfiguration configuration;
         private Backend.Managers.Db db = new Backend.Managers.Db();
         private Backend.Managers.Security security = new Backend.Managers.Security();
-        private static User logedInUser;
-
+        public static UserLogin logedInUser { get; set; }
+        
         public UserController(IConfiguration configuration)
         {
+            logedInUser = new UserLogin(db);
             this.configuration = configuration;
             db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
@@ -43,13 +45,13 @@ namespace Skp_ProjektDB.Controllers
 
                     if (hash == db.GetHash(loginName)) // if hashes matches == password is correct
                     {
-                        string winIdentity = User.Identity.Name;
+                        
                         // gets the user who logged in
-                        logedInUser = db.GetUserByUserName(loginName);
-                        logedInUser = db.GetUserRoles(logedInUser);
-                        db.UserLogIn(logedInUser.Login, winIdentity);
+                        logedInUser.User = db.GetUserByUserName(loginName);
+                        db.GetUserRoles(logedInUser.User);
+                        //db.UserLogIn(logedInUser.Login, winIdentity);
 
-                        if (logedInUser.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
+                        if (logedInUser.User.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
                         {
                             return Redirect("/Project/ProjectOverView");
                         }
@@ -83,10 +85,10 @@ namespace Skp_ProjektDB.Controllers
                 //returns a list of User models
                 List<User> users = db.GetAllUsers();
 
-                users.Where(x => x.Login == logedInUser.Login).Select(x => x.Owner = users.IndexOf(x));
-                if (logedInUser.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
+                users.Where(x => x.Login == logedInUser.User.Login).Select(x => x.Owner = users.IndexOf(x));
+                if (logedInUser.User.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
                 {
-                    users.Where(x => x.Login == logedInUser.Login).Select(x => x.Admin = true);
+                    users.Where(x => x.Login == logedInUser.User.Login).Select(x => x.Admin = true);
                 }
 
                 return View(users);
@@ -109,14 +111,14 @@ namespace Skp_ProjektDB.Controllers
                 }
             }
 
-            if (logedInUser != null && !string.IsNullOrEmpty(logedInUser.Login))
+            if (logedInUser != null && !string.IsNullOrEmpty(logedInUser.User.Login))
             {
                 if (user.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
                 {
                     user.Admin = true;
                     return View(user);
                 }
-                else if (user.Login == logedInUser.Login)
+                else if (user.Login == logedInUser.User.Login)
                 {
                     user.Owner = 1;
                     return View(user);
@@ -182,14 +184,14 @@ namespace Skp_ProjektDB.Controllers
         /// This is used to save newly created users
         /// </summary>
         /// <returns></returns>
-        public IActionResult CreateUser(User user)
+        public void CreateUser(User user)
         {
             //if (logedInUser != null)
             //{
                 if (user.Name == null)
                 {
                     user.Admin = true;
-                    return View(user);
+                    View(user);
                 }
                 else
                 {
@@ -207,7 +209,7 @@ namespace Skp_ProjektDB.Controllers
 
                     // create user on database
                     db.CreateUser(user);
-                    return Redirect("/User/UserOverView");
+                    Redirect("/User/UserOverView");
                 }
 
             //}

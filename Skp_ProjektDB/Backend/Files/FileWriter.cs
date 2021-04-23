@@ -6,8 +6,7 @@ using System.IO;
 namespace Skp_ProjektDB.Backend.Files
 {
     /// <summary>
-    /// Class is NOT needed in prod
-    /// Its Only for creating a secure file for the connection string
+    /// This class is needed for creating pdf file from data tables aka(projects)
     /// </summary>
     internal class FileWriter
     {

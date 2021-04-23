@@ -163,7 +163,7 @@ namespace Skp_ProjektDB.Backend.Db
             return data;
         }
 
-        public void RemoveRoleFromUser(SqlConnection connection, string username, string role)
+        public void RemoveRoleFromUser(SqlConnection connection, string username, User.Roles role)
         {
             SqlCommand command = new SqlCommand("RemoveRoleFromUser", connection);
             command.CommandType = CommandType.StoredProcedure;
@@ -172,7 +172,7 @@ namespace Skp_ProjektDB.Backend.Db
             command.ExecuteNonQuery();
         }
 
-        public void UpdateRole(SqlConnection connection, string username, string oldRole, string newRole)
+        public void UpdateRole(SqlConnection connection, string username, User.Roles oldRole, string newRole)
         {
             SqlCommand command = new SqlCommand("UpdateRole", connection);
             command.CommandType = CommandType.StoredProcedure;
@@ -435,6 +435,10 @@ namespace Skp_ProjektDB.Backend.Db
 
         public void LoginAuthentication(SqlConnection connection, string username, string winIdentity)
         {
+            if(string.IsNullOrEmpty(winIdentity))
+            {
+                winIdentity = "Server";
+            }
             SqlCommand command = new SqlCommand("LoginAuthentication", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("Username", username);

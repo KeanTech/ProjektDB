@@ -6,22 +6,23 @@ namespace Skp_ProjektDB.Backend.Managers
 {
 
     // This class is experimental needs some testing !
-    public class LogIn : ILogIn
+    public class UserLogin : ILogIn
     {
         private readonly Db db;
 
-        public LogIn(Db db)
+        public UserLogin(Db db)
         {
             this.db = db;
+            this.User = new User();
         }
 
-        public int UserID { get; set; }
+        public User User { get; set; }
         public bool LogedIn { get; set; }
         public string Identity { get; set; }
 
-        void ILogIn.LogIn(User user, string identity)
+        public void LogIn(User user, string identity)
         {
-            UserID = user.Id;
+            User = user;
             LogedIn = true;
             db.UserLogIn(user.Login, identity);
         }
@@ -33,7 +34,7 @@ namespace Skp_ProjektDB.Backend.Managers
         }
 
         //Remember to test the login, so that a user only can be logged in on one device at a time 
-        public void CheckLogIn(string identity, User user)
+        public void CheckLogIn(User user, string identity)
         {
             
             if (identity == "GetFromDB")
