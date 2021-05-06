@@ -248,7 +248,9 @@ namespace Skp_ProjektDB.Backend.Db
         {
             SqlCommand command = new SqlCommand("DeleteProject", connection);
             command.Parameters.AddWithValue("ID", projectId);
+            connection.Open();
             command.ExecuteNonQuery();
+            connection.Close();
         }
 
 

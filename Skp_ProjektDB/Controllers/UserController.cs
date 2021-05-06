@@ -17,20 +17,22 @@ namespace Skp_ProjektDB.Controllers
         private Backend.Managers.Db db = new Backend.Managers.Db();
         private Backend.Managers.Security security = new Backend.Managers.Security();
         public static UserLogin logedInUser { get; set; }
-        
+
         public UserController(IConfiguration configuration)
         {
-            logedInUser = new UserLogin(db);
+            if (logedInUser == null)
+            {
+                logedInUser = new UserLogin(db);
+            }
             this.configuration = configuration;
             db.SetConnection(configuration.GetConnectionString("SkpDb"));
         }
 
         // login needs to handle failed logins
-        
+        [ValidateAntiForgeryToken]
         public IActionResult UserLogin(string loginName, string password)
         {
-            var iden = User.Identity.Name;
-
+            
             if (loginName == null)
                 return BadRequest("Login oplysningerne var ikke korrekt");
             else
@@ -45,11 +47,9 @@ namespace Skp_ProjektDB.Controllers
 
                     if (hash == db.GetHash(loginName)) // if hashes matches == password is correct
                     {
-                        
                         // gets the user who logged in
                         logedInUser.User = db.GetUserByUserName(loginName);
                         db.GetUserRoles(logedInUser.User);
-                        //db.UserLogIn(logedInUser.Login, winIdentity);
 
                         if (logedInUser.User.UserRoles.Contains(Skp_ProjektDB.Models.User.Roles.Instruktør))
                         {
@@ -90,7 +90,6 @@ namespace Skp_ProjektDB.Controllers
                 {
                     users.Where(x => x.Login == logedInUser.User.Login).Select(x => x.Admin = true);
                 }
-
                 return View(users);
             }
             else
@@ -184,14 +183,14 @@ namespace Skp_ProjektDB.Controllers
         /// This is used to save newly created users
         /// </summary>
         /// <returns></returns>
-        public void CreateUser(User user)
+        public IActionResult CreateUser(User user)
         {
-            //if (logedInUser != null)
-            //{
+            if (logedInUser != null)
+            {
                 if (user.Name == null)
                 {
                     user.Admin = true;
-                    View(user);
+                    return View(user);
                 }
                 else
                 {
@@ -200,21 +199,15 @@ namespace Skp_ProjektDB.Controllers
 
                     // create random password for user
                     Random random = new Random();
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < 10; i++)
-                    {
-                        sb.Append(random.Next(0, 10));
-                    }
-                    user.Hash = security.Hash(Convert.FromBase64String(security.Encrypt(Encoding.UTF8.GetBytes(sb.ToString()), Convert.FromBase64String(user.Salt))));
+                    user.Hash = security.Hash(Convert.FromBase64String(security.Encrypt(Encoding.UTF8.GetBytes("Kode1234"), Convert.FromBase64String(user.Salt))));
 
                     // create user on database
                     db.CreateUser(user);
-                    Redirect("/User/UserOverView");
+                    return Redirect("/User/UserOverView");
                 }
-
-            //}
-            //else
-            //    return BadRequest("Du er ikke logget ind");
+            }
+            else
+                return BadRequest("Du er ikke logget ind");
         }
 
         //
@@ -235,7 +228,7 @@ namespace Skp_ProjektDB.Controllers
             //Redirect("/User/UserOverView");
         }
 
-
+        [HttpPost]
         public IActionResult AddRoleToUser(string userName, string role)
         {
             if (logedInUser != null)

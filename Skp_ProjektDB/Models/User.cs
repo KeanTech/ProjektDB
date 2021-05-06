@@ -1,19 +1,20 @@
 ﻿using Skp_ProjektDB.Types;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Skp_ProjektDB.Models
 {
     public class User
     {
-        public User(string name, string login, List<Roles> roles)
+        public User(string name, string login, List<Roles> uroles)
         {
             Name = name;
             Login = login;
-            UserRoles = roles;
+            UserRoles = uroles;
             Projects = new List<Project>();
         }
-
+        
         public enum Roles
         {
             Instruktør,
@@ -34,6 +35,7 @@ namespace Skp_ProjektDB.Models
         public string Login { get; set; }
         
         [DisplayName("Roller")]
+        [NotMapped]
         public List<Roles> UserRoles { get; set; }
 
         //This is for view only dont add this to db (User is part of Project)

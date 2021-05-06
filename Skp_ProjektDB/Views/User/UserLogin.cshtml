@@ -7,6 +7,7 @@
 <div class="container">
 
     <form asp-action="UserLogin" asp-controller="User">
+        @Html.AntiForgeryToken()
         <div class="list-group">
             <div class="list-group-item list-group-item-info w-25">
                 <label class="align-top" asp-for="@Model.Login"></label>
@@ -20,7 +21,7 @@
             </div>
 
         </div>
-        <input class="btn bg-info btn-dark" type="submit" value="Login"/>
+        <input class="btn bg-info btn-dark" type="submit" value="Login" />
     </form>
 
 </div>

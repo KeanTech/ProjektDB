@@ -15,7 +15,7 @@ namespace Skp_ProjektDB.Controllers
     {
         private readonly IConfiguration configuration;
         private Db db = new Db();
-
+        public UserLogin logedInUser { get; set; } = UserController.logedInUser;
 
         public ProjectController(IConfiguration configuration)
         {
@@ -30,14 +30,29 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult SingleProjectView(string projectName)
         {
-            var project = db.GetAllProjects().Where(x => x.Title == projectName).FirstOrDefault();
-            project.Team = db.GetTeam(project.Id);
-            project.Log = db.ViewAllLogsFromTeam(project.Id);
-            foreach (var item in project.Team)
+            if (logedInUser != null)
             {
-                db.GetUserRoles(item);
+                if (logedInUser.User.Login != null)
+                {
+                    var project = db.GetAllProjects().Where(x => x.Title == projectName).FirstOrDefault();
+                    project.Team = db.GetTeam(project.Id);
+                    project.Log = db.ViewAllLogsFromTeam(project.Id);
+                    foreach (var item in project.Team)
+                    {
+                        db.GetUserRoles(item);
+                    }
+                    if (logedInUser.User.UserRoles.Contains(Models.User.Roles.Instruktør))
+                    {
+                        project.Admin = true;
+                    }
+                    return View(project);
+                }
+                else
+                    return BadRequest("Du er ikke logget ind");
+
             }
-            return View(project);
+            else
+                return BadRequest("Du er ikke logget ind");
         }
 
         /// <summary>
@@ -46,10 +61,23 @@ namespace Skp_ProjektDB.Controllers
         /// <returns></returns>
         public IActionResult ProjectOverView()
         {
-            var projects = db.GetAllProjects();
-            projects.OrderBy(x => x.Title.ToLower() == "a");
-
-            return View(projects);
+            if (logedInUser != null)
+            {
+                if (logedInUser.User.Login != null)
+                {
+                    var projects = db.GetAllProjects();
+                    projects.OrderBy(x => x.Title.ToLower() == "a");
+                    if (logedInUser.User.UserRoles.Contains(Models.User.Roles.Instruktør))
+                    {
+                        projects[0].Admin = true;
+                    }
+                    return View(projects);
+                }
+                else
+                    return BadRequest("Du er ikke logget ind");
+            }
+            else
+                return BadRequest("Du er ikke logget ind");
         }
 
         [HttpGet]
@@ -63,7 +91,10 @@ namespace Skp_ProjektDB.Controllers
         //Log vv
         public IActionResult WriteToLog(int projectId)
         {
-            return View(db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault());
+            if (logedInUser.User.Login != null)
+                return View(db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault());
+            else
+                return BadRequest("Du er ikke logget ind");
         }
 
         [HttpPost]
@@ -73,11 +104,20 @@ namespace Skp_ProjektDB.Controllers
 
             //Save the log to db
             //add username to logstring 
-            db.AddLogToProject(projectId, logString, username); 
+            if (logedInUser.User.Login != null)
+            {
+                db.AddLogToProject(projectId, logString, username);
 
-            var project = db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault();
+                var project = db.GetAllProjects().Where(x => x.Id == projectId).FirstOrDefault();
+                if (logedInUser.User.UserRoles.Contains(Models.User.Roles.Instruktør))
+                {
+                    project.Admin = true;
+                }
+                return Redirect("/Project/ProjectOverView");
+            }
+            else
+                return BadRequest("Du er ikke logget ind");
 
-            return Redirect("/Project/ProjectOverView");
         }
 
         public void UpdateLog(int projectId, string logString, string username)
@@ -141,42 +181,76 @@ namespace Skp_ProjektDB.Controllers
         [HttpGet]
         public IActionResult CreateProject()
         {
-            return View(new ProjectModel() { Users = db.GetAllUsers(), StartDate = DateTime.Now.Date, EndDate = DateTime.Now.Date });
+            if (logedInUser.User.Login != null)
+            {
+                return View(new ProjectModel() { Users = db.GetAllUsers(), StartDate = DateTime.Now.Date, EndDate = DateTime.Now.Date });
+            }
+            else
+            {
+                return BadRequest("Du er ikke logget ind");
+            }
         }
 
         [HttpPost]
-        public void CreateProject(ProjectModel model)
+        public IActionResult CreateProject(ProjectModel model)
         {
-            Project project = (Project)model;
+            if (logedInUser.User.Login != null)
+            {
+                Project project = (Project)model;
 
-            db.CreateProject(project);
-            Redirect("/Project/ProjectOverView");
+                db.CreateProject(project);
+                return Redirect("/Project/ProjectOverView");
+            }
+            else
+                return BadRequest("Du er ikke logget ind");
         }
 
-        public void DeleteProject(int projectId)
+        public IActionResult DeleteProject(int projectId)
         {
-            db.DeleteProject(projectId);
+            if (logedInUser.User.Login != null)
+            {
+                db.DeleteProject(projectId);
+                return Redirect("/Project/ProjectOverView");
+            }
+            else
+            {
+                return BadRequest("Du er ikke logget ind");
+            }
         }
 
         //-----------------------------------------------------CRUD Team Methods
 
         public void RemoveUserFromTeam(string userName, int projectId)
         {
-            db.RemoveUserFromTeam(userName, projectId);
-            Redirect("/Project/ProjectOverView");
+            if (logedInUser.User.Login != null)
+            {
+                db.RemoveUserFromTeam(userName, projectId);
+                Redirect("/Project/ProjectOverView");
+            }
         }
 
         public void AddUserToTeam(string userName, int projectId)
         {
-            db.AddUserToTeam(projectId, userName);
-            Redirect("/Project/ProjectOverView");
+            if (logedInUser.User.Login != null)
+            {
+                db.AddUserToTeam(projectId, userName);
+                Redirect("/Project/ProjectOverView");
+            }
+            else
+                BadRequest("Du er ikke logget ind");
         }
 
         //-----------------------------------------------------CRUD Role Methods
 
-        public void RemoveRoleFromUser(User user, User.Roles role) 
+        public void RemoveRoleFromUser(User user, User.Roles role)
         {
-            db.RemoveRoleFromUser(user.Login, role);
+            if (logedInUser.User.Login != null)
+            {
+                db.RemoveRoleFromUser(user.Login, role);
+            }
+            else
+                BadRequest("Du er ikke logget ind");
+            
         }
 
         public void AddRoleToUser(User user)

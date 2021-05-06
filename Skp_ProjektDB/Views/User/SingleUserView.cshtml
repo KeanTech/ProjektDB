@@ -33,7 +33,6 @@
                         </div>
                     </li>
 
-
                     <!-- Roles -->
                     <li class="list-group-item list-group-item-info">
                         <div class="list-group">
@@ -42,13 +41,32 @@
                             {
                                 @for (int j = 0; j < Model.UserRoles.Count; j++)
                                 {
-                                    <p style="margin-left:30px;">@Model.UserRoles[j]</p>
+                                    <p class="rolename"><input name="role" type="checkbox" class="custom-checkbox"> @Model.UserRoles[j]</p>
                                 }
                             }
 
                         </div>
 
                     </li>
+
+                    <li class="list-group-item list-group-item-info">
+                        <div class="list-group">
+                            <button class="btn btn-outline-info btn-dark">Slet Bruger</button>
+                            <button class="btn btn-outline-info btn-dark mt-1">Ret Bruger</button>
+                        </div>
+                    </li>
+
+                    <li class="list-group-item list-group-item-info">
+
+                        <div class="list-group">
+
+                            <button class="btn btn-outline-info btn-dark">Fjern Rolle</button>
+                            <button class="btn btn-outline-info btn-dark mt-1" onclick="AddRoleToUser()">Tilføj Rolle</button>
+
+                        </div>
+
+                    </li>
+
                 </ul>
 
             </dd>
@@ -101,3 +119,24 @@
     </div>
 
 </div>
+
+<script>
+    function AddRoleToUser() {
+        var action = '@Url.Action("AddRoleToUser")';
+        var role = @("@role")
+
+    }
+
+    var action = '@Url.Action("AddRoleToUser")';
+        var role = @("#role").val();
+
+        if (role == true) {
+            var rolename = @("#rolename").val();
+        }
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            success: function (data) { alert(data); }
+        })
+</script>

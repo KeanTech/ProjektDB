@@ -31,17 +31,6 @@ namespace Skp_ProjektDB.Models
 
         public List<User> Team { get; set; }
 
-        public Project(string title, string description, List<LogModel> log, DateTime startDate, DateTime endDate, string projectleder, List<User> team)
-        {
-            Title = title;
-            Description = description;
-            Log = log;
-            StartDate = startDate;
-            EndDate = endDate;
-            Projectleader = projectleder;
-            Team = team;
-        }
-
         public Project()
         {
         }
